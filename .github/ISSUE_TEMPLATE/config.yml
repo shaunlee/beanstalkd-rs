@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Operations guide
+    url: https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md
+    about: Install, configuration, persistence, clusters, backup and monitoring
+  - name: Compatibility notes
+    url: https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md
+    about: The intentional differences from the reference beanstalkd

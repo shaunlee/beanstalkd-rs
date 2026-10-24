@@ -1,0 +1,43 @@
+name: Feature request
+description: A capability the server does not have
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do that the server does not let you do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you propose
+      description: The behavior, a config key or a command. Sketches are welcome.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reference
+    attributes:
+      label: Does the reference beanstalkd have this?
+      options:
+        - "No: this is an extension"
+        - "Yes, and it should match it exactly"
+        - Not sure
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Extensions that change the protocol or a reply need an entry in
+        [docs/COMPAT.md](https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md),
+        since existing clients must keep working.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: How do you work around it today?

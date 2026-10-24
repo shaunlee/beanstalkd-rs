@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="beanstalkd-rs: a byte-for-byte replacement for beanstalkd, in Rust">
+  <rect width="1280" height="640" fill="#0d1117"/>
+
+  <g font-family="Menlo, monospace">
+    <rect x="80" y="92" width="56" height="6" fill="#3fb950"/>
+
+    <text x="1200" y="104" text-anchor="end" font-size="19" fill="#8b949e">MIT · no unsafe code</text>
+
+    <text x="80" y="204" font-size="82" font-weight="bold" fill="#f0f6fc">beanstalkd-rs</text>
+    <text x="80" y="262" font-size="29" fill="#8b949e">a byte-for-byte replacement for beanstalkd, in Rust</text>
+
+    <line x1="435" y1="380" x2="435" y2="486" stroke="#21262d" stroke-width="1"/>
+    <line x1="825" y1="380" x2="825" y2="486" stroke="#21262d" stroke-width="1"/>
+
+    <text x="80" y="430" font-size="52" fill="#3fb950">2.2&#215;</text>
+    <text x="80" y="470" font-size="22" fill="#8b949e">throughput with a binlog</text>
+
+    <text x="470" y="430" font-size="52" fill="#f0f6fc">1.2&#8211;1.4&#215;</text>
+    <text x="470" y="470" font-size="22" fill="#8b949e">at 10&#8211;100 connections</text>
+
+    <text x="860" y="430" font-size="52" fill="#f0f6fc">3 or 5</text>
+    <text x="860" y="470" font-size="22" fill="#8b949e">nodes, Raft-replicated</text>
+
+    <rect x="80" y="536" width="352" height="52" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="102" y="569" font-size="21">
+      <tspan fill="#3fb950">$</tspan><tspan fill="#f0f6fc" dx="12">cargo install bstkd</tspan>
+    </text>
+
+    <text x="1200" y="569" text-anchor="end" font-size="19" fill="#8b949e">github.com/shaunlee/beanstalkd-rs</text>
+  </g>
+</svg>

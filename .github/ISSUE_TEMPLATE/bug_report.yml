@@ -1,0 +1,71 @@
+name: Bug report
+description: A crash, a wrong reply, or a behavior that differs from beanstalkd or from the documentation
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report security problems here: see [SECURITY.md](https://github.com/shaunlee/beanstalkd-rs/blob/main/SECURITY.md).
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The output of `beanstalkd-rs -v`, or the container image tag.
+      placeholder: beanstalkd-rs 0.5.1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Linux x86_64
+        - Linux aarch64
+        - macOS aarch64
+        - Container image
+        - Other (described below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: startup
+    attributes:
+      label: How the server was started
+      description: The flags or the config file, with secrets removed.
+      render: shell
+      placeholder: |
+        beanstalkd-rs -l 127.0.0.1 -p 11300 -b /var/lib/beanstalkd-rs -f 50
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+      description: If it differs from the reference beanstalkd, say what the reference did.
+    validations:
+      required: true
+
+  - type: textarea
+    id: transcript
+    attributes:
+      label: Protocol transcript
+      description: The commands you sent and the bytes that came back, if the bug is visible on the wire.
+      render: text
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Server output around the failure, and the client library and version.
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the existing issues.
+          required: true
+        - label: I read the compatibility notes (docs/COMPAT.md) and this is not listed there.
+          required: false
