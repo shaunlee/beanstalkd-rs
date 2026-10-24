@@ -13,9 +13,9 @@ Release tags are `v<version>` and match the workspace version in
 
 ## [0.5.1] - 2026-10-24
 
-Packaging and documentation only: no protocol, binlog, cluster or command
-line changes, so 0.5.0 and 0.5.1 are interchangeable and a rolling upgrade
-between them is a plain restart.
+Packaging, documentation and dependency updates: no protocol, binlog,
+cluster or command line changes, so 0.5.0 and 0.5.1 are interchangeable and
+a rolling upgrade between them is a plain restart.
 
 ### Added
 
@@ -43,6 +43,8 @@ between them is a plain restart.
 - The server package is named `bstkd` instead of `bstk-server`. The binary,
   the release archives, the container image and the systemd unit are still
   `beanstalkd-rs`.
+- Dependencies: rustls 0.23.46, rustls-webpki 0.103.16 and tokio 1.54.1,
+  which fix RUSTSEC-2026-0346, -0347, -0382 and -0386.
 
 ## [0.5.0] - 2026-10-10
 

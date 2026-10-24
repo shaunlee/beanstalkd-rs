@@ -1376,11 +1376,12 @@ it needs a full cluster restart: stop every node, replace every binary,
 start every node (section 5.7; the data directories are kept). Standalone
 servers upgrade as in 7.2.
 
-0.5.1 is a packaging-only release: it has the same code as 0.5.0, so
-switching between the two is a plain restart. No upgrade between two
-releases with different code has been tested yet. What was tested is
-replacing the binary with a build of the same version, both by a full stop
-and start and by a rolling restart, which exercises the procedures below.
+0.5.1 changes only packaging, documentation and dependency versions: no
+protocol, binlog or behavior change, so switching between 0.5.0 and 0.5.1
+is a plain restart. No upgrade between two releases with different behavior
+has been tested yet. What was tested is replacing the binary with a build of
+the same version, both by a full stop and start and by a rolling restart,
+which exercises the procedures below.
 
 ### 7.2 Standalone
 

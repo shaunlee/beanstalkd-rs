@@ -128,8 +128,8 @@ each):
 
 ## Is it ready?
 
-0.5.1 is the current release; it differs from 0.5.0 only in packaging and
-documentation. In test terms:
+0.5.1 is the current release; it differs from 0.5.0 only in packaging,
+documentation and dependency updates. In test terms:
 
 - **222 differential cases** replay the same operations against the reference
   C implementation and require identical replies
