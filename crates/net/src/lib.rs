@@ -26,13 +26,29 @@ pub struct QuietTcp {
     blocked: Option<AsyncFd<std::net::TcpStream>>,
 }
 
+/// Registers `std` for one interest only.
+///
+/// tokio 1.54 deprecated the safe constructors: `AsyncFd` cannot prove, for
+/// a generic `AsRawFd`, that the descriptor stays open and unchanged while
+/// it is registered, so its replacement `AsyncFd::register_with_interest` is
+/// `unsafe` and this workspace forbids unsafe code. `QuietTcp` owns both
+/// streams and never replaces or closes a descriptor it has registered, so
+/// the deprecated constructor is sound here.
+#[allow(deprecated)]
+fn registered(
+    std: std::net::TcpStream,
+    interest: Interest,
+) -> io::Result<AsyncFd<std::net::TcpStream>> {
+    AsyncFd::with_interest(std, interest)
+}
+
 impl QuietTcp {
     /// Takes over `tcp` (its options, such as `TCP_NODELAY`, are kept).
     pub fn new(tcp: tokio::net::TcpStream) -> io::Result<QuietTcp> {
         let std = tcp.into_std()?;
         std.set_nonblocking(true)?;
         Ok(QuietTcp {
-            io: AsyncFd::with_interest(std, Interest::READABLE)?,
+            io: registered(std, Interest::READABLE)?,
             blocked: None,
         })
     }
@@ -112,7 +128,7 @@ impl AsyncWrite for QuietTcp {
                         Some(fd) => fd,
                         // Registering reports the current state, so space
                         // freed since the failed write is not missed.
-                        b @ None => b.insert(AsyncFd::with_interest(
+                        b @ None => b.insert(registered(
                             this.io.get_ref().try_clone()?,
                             Interest::WRITABLE,
                         )?),
