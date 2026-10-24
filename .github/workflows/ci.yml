@@ -116,7 +116,7 @@ jobs:
           key: ${{ steps.ref.outputs.cache-primary-key }}
       - name: Build beanstalkd-rs (release)
         run: |
-          cargo build --release -p bstk-server
+          cargo build --release -p bstkd
           echo "BSTK_RS_BIN=$PWD/target/release/beanstalkd-rs" >> "$GITHUB_ENV"
           echo "SMOKE_VENV=$RUNNER_TEMP/smoke-venv" >> "$GITHUB_ENV"
       - name: Smoke (plain)
@@ -155,7 +155,7 @@ jobs:
       - name: Build beanstalkd-rs (debug, for the multi-process runs)
         run: |
           echo "cores: $(nproc)"
-          cargo build -p bstk-server
+          cargo build -p bstkd
           echo "BSTK_RS_BIN=$PWD/target/debug/beanstalkd-rs" >> "$GITHUB_ENV"
           echo "BSTK_CHAOS_DIR=$RUNNER_TEMP/chaos" >> "$GITHUB_ENV"
           mkdir -p "$RUNNER_TEMP/chaos"

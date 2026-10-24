@@ -4,7 +4,13 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
-publish = false
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "The crash-safe write-ahead log behind beanstalkd-rs: preallocated segments, fsync policies, compaction and replay"
+keywords = ["wal", "write-ahead-log", "persistence", "crash-recovery", "beanstalkd"]
+categories = ["database-implementations", "filesystem"]
+readme = "README.md"
 
 [dependencies]
 bytes.workspace = true

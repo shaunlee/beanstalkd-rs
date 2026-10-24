@@ -1,6 +1,6 @@
 //! Run every case in `cases/` with the reference C beanstalkd as server A
 //! and `beanstalkd-rs` as server B. This is the real differential
-//! compatibility suite; it is enabled once `bstk-server` exists (task T4)
+//! compatibility suite; it is enabled once `bstkd` exists (task T4)
 //! and driven to 100% pass during task T5.
 
 use std::path::{Path, PathBuf};

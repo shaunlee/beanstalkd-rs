@@ -6,7 +6,7 @@
 //! then fsync each segment it wrote before returning; the engine actor
 //! releases replies only after `append` returns (proved by
 //! `engine_actor::tests::replies_are_released_only_after_append_returns`
-//! in bstk-server). Together: write → fsync → reply for every
+//! in bstkd). Together: write → fsync → reply for every
 //! acknowledged change.
 
 use super::*;

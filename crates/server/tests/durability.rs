@@ -33,7 +33,7 @@
 //! rounds per mode) is ignored by default:
 //!
 //! ```sh
-//! cargo test --release -p bstk-server --test durability -- --ignored --nocapture durability_torture_full
+//! cargo test --release -p bstkd --test durability -- --ignored --nocapture durability_torture_full
 //! ```
 //!
 //! Environment: `BSTK_DURABILITY_ROUNDS` (rounds per mode, default 100 for
@@ -53,7 +53,7 @@
 //! runs; the server is SIGKILLed, restarted and checked again.
 //!
 //! ```sh
-//! cargo test --release -p bstk-server --test durability -- --ignored --nocapture compaction_churn_full
+//! cargo test --release -p bstkd --test durability -- --ignored --nocapture compaction_churn_full
 //! ```
 //!
 //! `BSTK_CHURN_OPS` sets the number of put + delete pairs of the first

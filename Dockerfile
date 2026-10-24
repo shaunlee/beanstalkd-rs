@@ -18,7 +18,7 @@
 FROM rust:1.98-slim-trixie AS build
 WORKDIR /src
 # Every workspace member's manifest must be present for cargo to resolve
-# the workspace, even though only bstk-server is built.
+# the workspace, even though only bstkd is built.
 COPY . .
 # target/ lives in a cache mount that disappears after this step, so the
 # binary is copied out within the same RUN. The release profile keeps line
@@ -29,7 +29,7 @@ ENV CARGO_PROFILE_RELEASE_STRIP=debuginfo
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
     --mount=type=cache,target=/src/target \
-    cargo build --release --locked -p bstk-server \
+    cargo build --release --locked -p bstkd \
  && cp target/release/beanstalkd-rs /usr/local/bin/beanstalkd-rs
 
 # debian-slim rather than distroless: the HEALTHCHECK below needs a shell.

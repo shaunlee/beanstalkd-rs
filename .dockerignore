@@ -1,4 +1,4 @@
-# The image builds only bstk-server; keep the build context small and free
+# The image builds only bstkd; keep the build context small and free
 # of host build output (target/, the reference build in .ref/).
 .git
 .github

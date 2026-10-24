@@ -1,6 +1,6 @@
 //! Black-box integration tests for the `beanstalkd-rs` binary: spawn the
 //! real binary and drive it over raw TCP, exactly as a client would. Per
-//! T4 scope, these only touch the `bstk-server` crate's public artifact
+//! T4 scope, these only touch the `bstkd` crate's public artifact
 //! (the compiled binary); they know nothing about its internals.
 
 #![allow(clippy::unwrap_used)]

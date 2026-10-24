@@ -4,8 +4,13 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
-publish = false
-description = "Frozen pre-T6b copy of bstk-engine, used only as a differential test oracle"
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "A frozen copy of bstk-engine, used only as the differential-test oracle of beanstalkd-rs"
+keywords = ["beanstalkd", "testing", "differential-testing", "oracle"]
+categories = ["development-tools::testing"]
+readme = "README.md"
 
 [dependencies]
 bytes.workspace = true

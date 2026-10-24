@@ -50,7 +50,7 @@ jobs:
       - name: Build beanstalkd-rs (debug)
         run: |
           echo "cores: $(nproc)"
-          cargo build -p bstk-server
+          cargo build -p bstkd
           echo "BSTK_RS_BIN=$PWD/target/debug/beanstalkd-rs" >> "$GITHUB_ENV"
           echo "BSTK_CHAOS_DIR=$RUNNER_TEMP/chaos" >> "$GITHUB_ENV"
           mkdir -p "$RUNNER_TEMP/chaos"

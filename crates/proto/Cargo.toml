@@ -4,7 +4,13 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
-publish = false
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "The beanstalkd wire protocol in Rust: command parsing, response encoding and stats types"
+keywords = ["beanstalkd", "protocol", "parser", "queue", "tokio"]
+categories = ["network-programming", "parser-implementations"]
+readme = "README.md"
 
 [dependencies]
 bytes.workspace = true

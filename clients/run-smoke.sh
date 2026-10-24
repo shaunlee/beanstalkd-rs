@@ -91,7 +91,7 @@ if [ ! -x "$REF_BIN" ]; then
 fi
 if [ -z "${BSTK_RS_BIN:-}" ]; then
   echo "run-smoke: building beanstalkd-rs (release)..." >&2
-  (cd "$ROOT" && cargo build --release -q -p bstk-server)
+  (cd "$ROOT" && cargo build --release -q -p bstkd)
   RS_BIN="${CARGO_TARGET_DIR:-$ROOT/target}/release/beanstalkd-rs"
 else
   RS_BIN="$BSTK_RS_BIN"

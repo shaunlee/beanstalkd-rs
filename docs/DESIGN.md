@@ -43,7 +43,7 @@
 | `bstk-proto` | Command parsing, response encoding, stats YAML, `ServerCodec`. No I/O, fuzzable (`crates/proto/fuzz`). | bytes, tokio-util |
 | `bstk-engine` | Deterministic state machine: jobs, tubes, connection state, queues, timers | bstk-proto |
 | `bstk-engine-oracle` | Dev-only frozen copy of the engine before the T6b index refactor; used by an equivalence proptest | bstk-proto |
-| `bstk-server` | Binary `beanstalkd-rs`: listeners (plain / TLS), connection tasks, engine actor, CLI and config, auth, HTTP monitoring, system info | tokio, bstk-net, tokio-rustls, hyper, clap, toml, nix, getrandom, tracing |
+| `bstkd` | Binary `beanstalkd-rs`: listeners (plain / TLS), connection tasks, engine actor, CLI and config, auth, HTTP monitoring, system info | tokio, bstk-net, tokio-rustls, hyper, clap, toml, nix, getrandom, tracing |
 | `bstk-compat` (`tests/compat`) | Differential harness and `.bt` case corpus against the reference | — |
 | `bstk-bench` (`bench/`) | Load generator and benchmark matrix | tokio |
 | `bstk-store` | Write-ahead log: segments, CRC records, reservation, compaction, replay | bstk-engine (types), crc32c, nix |
@@ -681,7 +681,7 @@ Findings (P5-T6), each fixed with a regression test in the owning crate:
 - `build_snapshot` logs the lock and total time at info.
 
 **P4-T8 (comment cleanup, `bstk-net`)**
-- New crate `bstk-net` (`crates/net`) with `bstk_net::QuietTcp` (moved from `bstk_raft::quiet_tcp`; same API); `bstk-server` and `bstk-raft` depend on it, so the server's client path no longer reaches `QuietTcp` through the Raft crate. Only tokio.
+- New crate `bstk-net` (`crates/net`) with `bstk_net::QuietTcp` (moved from `bstk_raft::quiet_tcp`; same API); `bstkd` and `bstk-raft` depend on it, so the server's client path no longer reaches `QuietTcp` through the Raft crate. Only tokio.
 - Removed the doc-only `bstk_engine::_api_doc` and `bstk_engine_oracle::_api_doc`; their per-method contracts now sit on the `Engine` methods.
 - Long design reasoning in code comments moved here: §4.6, §6.2, §7.1 to §7.3, §9.1. No behavior change.
 
@@ -722,7 +722,7 @@ Findings (P5-T6), each fixed with a regression test in the owning crate:
 - `bstk_raft::client::Network::{set_members, address}`; `NetworkConfig::peers` are now overrides (a target is dialed at its config address, else its membership address, else openraft's); `PeerClient` resolves its target on every RPC.
 - `bstk_raft::listener::{PeerAllowlist, REJECT_NOT_MEMBER}`, `ClusterListener::allowlist()`; `ListenerConfig::peers` is the initial allowlist and `max_handshakes_per_ip` a floor. The hello checks identity before membership. Wire format and protocol version (3) unchanged; the new rejection is a reason string inside the existing `ServerHello::Rejected`.
 - `StateHandle::{highest_member, connection_owners}`; snapshot payload version 3 (`SmMeta::highest_member`), version 2 still read.
-- `bstk-server` feature `test-hooks` (test-only membership changes, `cluster::test_hooks`).
+- `bstkd` feature `test-hooks` (test-only membership changes, `cluster::test_hooks`).
 
 **P6-T2 (cluster protocol v4, admin channel)**
 - `wire::PROTOCOL_VERSION` = 4, exact match, no negotiation; appended `ClientMsg::{AdminHello, Admin}`, `ServerMsg::Admin`, `RpcRequest::StatusEx`, `RpcResponse::StatusEx`; `wire::{AdminHello, AdminRequest, AdminResponse, MAX_ADMIN_REASON_LEN, ADMIN_MAX_REQUEST_FRAME}`. Version 3 encodings unchanged.

@@ -34,7 +34,7 @@ clients/run-smoke.sh
 
 The runner:
 
-1. builds `beanstalkd-rs` (`cargo build --release -p bstk-server`, honouring
+1. builds `beanstalkd-rs` (`cargo build --release -p bstkd`, honouring
    `CARGO_TARGET_DIR`) unless `BSTK_RS_BIN` is set;
 2. for each client, starts a fresh reference server and a fresh
    `beanstalkd-rs` on free ports bound to 127.0.0.1, and runs the client

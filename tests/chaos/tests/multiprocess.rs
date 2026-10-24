@@ -1,5 +1,5 @@
 //! Multi-process chaos (see `bstk_chaos::mp`). Needs the `beanstalkd-rs`
-//! binary (`cargo build -p bstk-server`, or `BSTK_RS_BIN`).
+//! binary (`cargo build -p bstkd`, or `BSTK_RS_BIN`).
 //!
 //! - `cargo test -p bstk-chaos --test multiprocess`: one short run;
 //! - full run: `BSTK_CHAOS_MP_RUNS=100 cargo test -p bstk-chaos --test

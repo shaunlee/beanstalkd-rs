@@ -11,6 +11,39 @@ Release tags are `v<version>` and match the workspace version in
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-24
+
+Packaging and documentation only: no protocol, binlog, cluster or command
+line changes, so 0.5.0 and 0.5.1 are interchangeable and a rolling upgrade
+between them is a plain restart.
+
+### Added
+
+- **crates.io**: the server is published as the `bstkd` package
+  (`cargo install bstkd`; the binary is still `beanstalkd-rs`), and
+  `cargo binstall bstkd` downloads the release archive instead of
+  compiling. The package is `bstkd` because `beanstalkd-rs` on crates.io is
+  an unrelated client library. The crates it builds on (`bstk-proto`,
+  `bstk-engine`, `bstk-store`, `bstk-net`, `bstk-raft`, plus
+  `bstk-engine-oracle`, the frozen engine its tests compare against) are
+  published too, in dependency order, by `scripts/publish.sh`.
+- **`scripts/demo.sh`**: a demo with no dependencies beyond bash, python3
+  and curl. It runs a producer and a worker over the protocol, reads
+  `/metrics`, sends SIGTERM and restarts on the same binlog to show that
+  the jobs survived.
+- **README**: a "Migrating from beanstalkd" section (the protocol and the
+  command line are compatible; the binlog directory is not, plus the other
+  behavior changes), "Is it ready?" (the test evidence) and "When
+  something else fits better".
+- crates.io metadata for every published crate (description, keywords,
+  categories, README) and `[package.metadata.binstall]` for the server.
+
+### Changed
+
+- The server package is named `bstkd` instead of `bstk-server`. The binary,
+  the release archives, the container image and the systemd unit are still
+  `beanstalkd-rs`.
+
 ## [0.5.0] - 2026-10-10
 
 First release. A Rust reimplementation of
@@ -88,5 +121,6 @@ clients can use unmodified.
   ([packaging/](https://github.com/shaunlee/beanstalkd-rs/tree/main/packaging))
   and `scripts/mkcluster-certs.sh` for a cluster CA and node certificates.
 
-[Unreleased]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/shaunlee/beanstalkd-rs/releases/tag/v0.5.0

@@ -3350,7 +3350,7 @@ fn cli_exit_statuses_and_concurrent_changes() {
 
 /// P6-T1: membership changes through the test-only hook (feature
 /// `test-hooks`, `cluster::test_hooks`; run by `scripts/check.sh` as
-/// `cargo test -p bstk-server --features test-hooks --test cluster membership::`).
+/// `cargo test -p bstkd --features test-hooks --test cluster membership::`).
 /// Nothing reachable by an operator changes membership before P6-T4.
 #[cfg(feature = "test-hooks")]
 mod membership {

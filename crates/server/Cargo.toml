@@ -1,14 +1,28 @@
 [package]
-name = "bstk-server"
+name = "bstkd"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
-publish = false
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "A drop-in replacement for beanstalkd in Rust, byte for byte: TLS, authentication, Prometheus metrics and Raft replication"
+keywords = ["beanstalkd", "job-queue", "work-queue", "raft", "tls"]
+categories = ["command-line-utilities", "network-programming", "asynchronous"]
+readme = "README.md"
 
 [[bin]]
 name = "beanstalkd-rs"
 path = "src/main.rs"
+
+# `cargo binstall bstkd` fetches the release archive instead of
+# compiling: the assets are beanstalkd-rs-<version>-<target>.tar.gz and the
+# archive holds the binary in a directory of the same name.
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/beanstalkd-rs-{ version }-{ target }.{ archive-format }"
+bin-dir = "beanstalkd-rs-{ version }-{ target }/"
+pkg-fmt = "tgz"
 
 [dependencies]
 bytes.workspace = true
@@ -20,7 +34,7 @@ tracing.workspace = true
 tracing-subscriber = { workspace = true, features = ["json"] }
 bstk-proto.workspace = true
 bstk-engine.workspace = true
-bstk-store = { path = "../store" }
+bstk-store.workspace = true
 bstk-raft.workspace = true
 bstk-net.workspace = true
 openraft.workspace = true

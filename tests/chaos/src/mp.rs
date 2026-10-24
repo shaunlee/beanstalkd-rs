@@ -298,7 +298,7 @@ impl Cluster {
         let bin = server_bin();
         if !bin.exists() {
             return Err(format!(
-                "{} not found: build it first (cargo build -p bstk-server) or set BSTK_RS_BIN",
+                "{} not found: build it first (cargo build -p bstkd) or set BSTK_RS_BIN",
                 bin.display()
             ));
         }

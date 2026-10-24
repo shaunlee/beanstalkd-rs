@@ -57,8 +57,8 @@ Verify the download before unpacking. Linux:
 
 ```sh
 sha256sum -c --ignore-missing SHA256SUMS
-tar -xzf beanstalkd-rs-0.5.0-aarch64-unknown-linux-gnu.tar.gz
-./beanstalkd-rs-0.5.0-aarch64-unknown-linux-gnu/beanstalkd-rs --version
+tar -xzf beanstalkd-rs-0.5.1-aarch64-unknown-linux-gnu.tar.gz
+./beanstalkd-rs-0.5.1-aarch64-unknown-linux-gnu/beanstalkd-rs --version
 ```
 
 macOS (`shasum` instead of `sha256sum`; a binary downloaded with a browser
@@ -66,8 +66,8 @@ is quarantined by Gatekeeper because it is not signed):
 
 ```sh
 shasum -a 256 -c --ignore-missing SHA256SUMS
-tar -xzf beanstalkd-rs-0.5.0-aarch64-apple-darwin.tar.gz
-xattr -d com.apple.quarantine beanstalkd-rs-0.5.0-aarch64-apple-darwin/beanstalkd-rs
+tar -xzf beanstalkd-rs-0.5.1-aarch64-apple-darwin.tar.gz
+xattr -d com.apple.quarantine beanstalkd-rs-0.5.1-aarch64-apple-darwin/beanstalkd-rs
 ```
 
 `--ignore-missing` lets you download only the archive you need.
@@ -85,8 +85,8 @@ volume, exposes 11300 and has a `HEALTHCHECK` that sends `stats` to
 `127.0.0.1:11300`.
 
 ```sh
-docker pull shonhen/beanstalkd-rs:0.5.0
-docker tag shonhen/beanstalkd-rs:0.5.0 beanstalkd-rs   # the examples use this name
+docker pull shonhen/beanstalkd-rs:0.5.1
+docker tag shonhen/beanstalkd-rs:0.5.1 beanstalkd-rs   # the examples use this name
 docker volume create bstk-data
 docker run -d --init --name bstk -p 127.0.0.1:11300:11300 -v bstk-data:/data \
     beanstalkd-rs -l 0.0.0.0 -p 11300 -b /data -V
@@ -147,7 +147,7 @@ call filter) that runs `beanstalkd-rs --config
 `cluster.data_dir` there. From an unpacked release archive, as root:
 
 ```sh
-cd beanstalkd-rs-0.5.0-aarch64-unknown-linux-gnu
+cd beanstalkd-rs-0.5.1-aarch64-unknown-linux-gnu
 useradd --system --user-group --home-dir /var/lib/beanstalkd-rs \
     --shell /usr/sbin/nologin beanstalkd
 install -m 0755 beanstalkd-rs /usr/local/bin/beanstalkd-rs
@@ -198,7 +198,7 @@ Requires Rust 1.98 or newer (the workspace's `rust-version`).
 ```sh
 git clone https://github.com/shaunlee/beanstalkd-rs
 cd beanstalkd-rs
-cargo build --release --locked -p bstk-server
+cargo build --release --locked -p bstkd
 ./target/release/beanstalkd-rs --version
 ```
 
@@ -648,7 +648,7 @@ systemctl daemon-reload
 The running process is not affected by the `daemon-reload`.
 
 **Local walkthrough** (one machine, loopback addresses, any OS; from a
-source checkout after `cargo build --release -p bstk-server`). The rest of
+source checkout after `cargo build --release -p bstkd`). The rest of
 this section uses it; with systemd, replace the start and stop commands by
 `systemctl` and the addresses by yours.
 
@@ -1370,16 +1370,17 @@ the whole cluster or a mistake that deleted jobs everywhere.
   upgrading; a change of the binlog, cluster data or protocol format is a
   user-facing change and is called out there.
 
-0.5.0 speaks cluster protocol version 4. A later version with the same
+0.5.x speaks cluster protocol version 4. A later version with the same
 protocol version upgrades with a rolling restart (7.3); one that changes
 it needs a full cluster restart: stop every node, replace every binary,
 start every node (section 5.7; the data directories are kept). Standalone
 servers upgrade as in 7.2.
 
-0.5.0 is the first release, so no upgrade between two releases has been
-tested yet. What was tested is replacing the binary with a build of the
-same version, both by a full stop and start and by a rolling restart,
-which exercises the procedures below.
+0.5.1 is a packaging-only release: it has the same code as 0.5.0, so
+switching between the two is a plain restart. No upgrade between two
+releases with different code has been tested yet. What was tested is
+replacing the binary with a build of the same version, both by a full stop
+and start and by a rolling restart, which exercises the procedures below.
 
 ### 7.2 Standalone
 

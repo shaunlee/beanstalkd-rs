@@ -4,7 +4,13 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
-publish = false
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "The deterministic beanstalkd state machine in Rust: jobs, tubes, priorities, TTR, delays and pause, with no I/O or clock"
+keywords = ["beanstalkd", "queue", "state-machine", "work-queue"]
+categories = ["data-structures"]
+readme = "README.md"
 
 [dependencies]
 bytes.workspace = true

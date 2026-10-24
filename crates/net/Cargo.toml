@@ -4,7 +4,13 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
-publish = false
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Tokio codec and socket helpers for the beanstalkd protocol"
+keywords = ["tokio", "codec", "beanstalkd", "network"]
+categories = ["network-programming", "asynchronous"]
+readme = "README.md"
 
 [dependencies]
 tokio.workspace = true

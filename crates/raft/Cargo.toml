@@ -4,7 +4,13 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
-publish = false
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Raft replication for beanstalkd-rs: every engine input is a log entry, every node replies for its own connections"
+keywords = ["raft", "consensus", "replication", "beanstalkd"]
+categories = ["network-programming", "database-implementations"]
+readme = "README.md"
 
 [dependencies]
 bytes.workspace = true

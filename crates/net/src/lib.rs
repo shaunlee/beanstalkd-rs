@@ -1,4 +1,4 @@
-//! Socket helpers shared by the client path (`bstk-server`) and the cluster
+//! Socket helpers shared by the client path (`bstkd`) and the cluster
 //! transport (`bstk-raft`).
 //!
 //! `QuietTcp` is a TCP stream registered with the runtime for read readiness

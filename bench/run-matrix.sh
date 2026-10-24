@@ -143,7 +143,7 @@ read -r -a delayed_list <<<"$DELAYED_TUBES"
 bins=("$RS_BIN" "$BENCH_BIN")
 [ "$need_ref" = 1 ] && bins+=("$REF_BIN")
 for b in "${bins[@]}"; do
-  [ -x "$b" ] || { echo "run-matrix: missing binary $b (reference: scripts/build-ref.sh --optimized; ours: cargo build --release -p bstk-server -p bstk-bench)" >&2; exit 1; }
+  [ -x "$b" ] || { echo "run-matrix: missing binary $b (reference: scripts/build-ref.sh --optimized; ours: cargo build --release -p bstkd -p bstk-bench)" >&2; exit 1; }
 done
 
 free_port() {
