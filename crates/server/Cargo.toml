@@ -19,9 +19,13 @@ path = "src/main.rs"
 # `cargo binstall bstkd` fetches the release archive instead of
 # compiling: the assets are beanstalkd-rs-<version>-<target>.tar.gz and the
 # archive holds the binary in a directory of the same name.
+# bin-dir names the binary inside the archive, not the directory holding it:
+# the release archive keeps the binary, README, docs and packaging files under
+# beanstalkd-rs-<version>-<target>/. binstall falls back to compiling from
+# source when it cannot find the file at this path.
 [package.metadata.binstall]
 pkg-url = "{ repo }/releases/download/v{ version }/beanstalkd-rs-{ version }-{ target }.{ archive-format }"
-bin-dir = "beanstalkd-rs-{ version }-{ target }/"
+bin-dir = "beanstalkd-rs-{ version }-{ target }/beanstalkd-rs{ binary-ext }"
 pkg-fmt = "tgz"
 
 [dependencies]

@@ -41,7 +41,7 @@ docker run -d --name bstk -p 127.0.0.1:11300:11300 -v bstk-data:/data \
 Or from crates.io (Rust 1.98 or newer; the binary is called `beanstalkd-rs`):
 
 ```sh
-cargo install bstkd        # or, for a prebuilt archive: cargo binstall bstkd
+cargo install bstkd        # or: cargo binstall bstkd
 beanstalkd-rs -l 127.0.0.1 -p 11300 -b ./binlog
 ```
 

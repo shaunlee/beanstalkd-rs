@@ -11,6 +11,13 @@ Release tags are `v<version>` and match the workspace version in
 
 ## [Unreleased]
 
+### Fixed
+
+- **`cargo binstall bstkd`**: the `bin-dir` in `[package.metadata.binstall]`
+  named the directory holding the binary instead of the binary, so binstall
+  fell back to compiling from source. Only the metadata is wrong and 0.5.1
+  is immutable, so the fix first takes effect in this release.
+
 ## [0.5.1] - 2026-10-24
 
 Packaging, documentation and dependency updates: no protocol, binlog,
@@ -21,8 +28,8 @@ a rolling upgrade between them is a plain restart.
 
 - **crates.io**: the server is published as the `bstkd` package
   (`cargo install bstkd`; the binary is still `beanstalkd-rs`), and
-  `cargo binstall bstkd` downloads the release archive instead of
-  compiling. The package is `bstkd` because `beanstalkd-rs` on crates.io is
+  `cargo binstall bstkd` installs it too. The package is `bstkd` because
+  `beanstalkd-rs` on crates.io is
   an unrelated client library. The crates it builds on (`bstk-proto`,
   `bstk-engine`, `bstk-store`, `bstk-net`, `bstk-raft`, plus
   `bstk-engine-oracle`, the frozen engine its tests compare against) are
