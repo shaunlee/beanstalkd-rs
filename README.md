@@ -107,7 +107,9 @@ switches rather than swapping the binary under a full queue:
 2. Send `SIGUSR1` to the old server: drain mode stops accepting puts but
    keeps serving reservations.
 3. Wait for `current-jobs-ready`, `current-jobs-reserved` and
-   `current-jobs-delayed` to reach 0.
+   `current-jobs-delayed` to reach 0. Buried jobs never drain by
+   themselves: kick them (`kick` per tube) so the workers take them, or
+   decide they can go, until `current-jobs-buried` is 0 too.
 4. Stop it, start beanstalkd-rs with `-b` on a **new, empty** directory, and
    move the clients.
 
