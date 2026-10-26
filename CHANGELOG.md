@@ -11,6 +11,14 @@ Release tags are `v<version>` and match the workspace version in
 
 ## [Unreleased]
 
+### Added
+
+- **Container image on ghcr.io**: `ghcr.io/shaunlee/beanstalkd-rs`, the
+  same image as `shonhen/beanstalkd-rs` on Docker Hub. A release tag now
+  builds both architectures, smoke-tests each and pushes the image
+  (`.github/workflows/image.yml`); it was pushed by hand before. 0.5.1 is
+  available there as well.
+
 ### Fixed
 
 - **`cargo binstall bstkd`**: the `bin-dir` in `[package.metadata.binstall]`

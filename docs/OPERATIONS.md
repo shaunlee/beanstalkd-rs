@@ -76,8 +76,12 @@ xattr -d com.apple.quarantine beanstalkd-rs-0.5.1-aarch64-apple-darwin/beanstalk
 
 The image is published on Docker Hub as
 [`shonhen/beanstalkd-rs`](https://hub.docker.com/r/shonhen/beanstalkd-rs)
-(tags `<version>`, `<major>.<minor>` and `latest`; linux/amd64 and
-linux/arm64), built from the repository's `Dockerfile` (multi-stage,
+and on the GitHub Container Registry as
+[`ghcr.io/shaunlee/beanstalkd-rs`](https://github.com/shaunlee/beanstalkd-rs/pkgs/container/beanstalkd-rs)
+(the same image; tags `<version>`, `<major>.<minor>` and `latest`;
+linux/amd64 and linux/arm64). The `Image` workflow builds it on every
+release tag, smoke-tests each architecture and pushes it. It is built
+from the repository's `Dockerfile` (multi-stage,
 Debian 13 runtime); `docker build -t beanstalkd-rs .` builds the same
 image locally. It runs as
 the non-root user `beanstalkd` (uid 10001), keeps data in the `/data`

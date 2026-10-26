@@ -31,7 +31,7 @@ One binary, no runtime dependencies, MIT.
 
 ## Try it
 
-Docker (linux/amd64 and linux/arm64):
+Docker (linux/amd64 and linux/arm64; also `ghcr.io/shaunlee/beanstalkd-rs`):
 
 ```sh
 docker run -d --name bstk -p 127.0.0.1:11300:11300 -v bstk-data:/data \
