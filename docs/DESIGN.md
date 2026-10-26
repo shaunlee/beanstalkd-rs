@@ -50,7 +50,7 @@
 | `bstk-raft` | Raft replication (P3): log entry and RPC types, log / snapshot storage, state-machine wrapper, network | openraft, bstk-engine, bstk-net, postcard |
 | `bstk-net` | `QuietTcp`, a TCP stream registered for read readiness only (P4-T5b); shared by the server's client path and the cluster transport so neither depends on the other | tokio |
 
-`clients/` holds real-client smoke tests (Python greenstalk, Go go-beanstalk).
+`clients/` holds real-client smoke tests (Python greenstalk, Go go-beanstalk, PHP Pheanstalk).
 
 ## 3. Concurrency Model
 

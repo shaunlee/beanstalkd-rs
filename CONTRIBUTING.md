@@ -51,7 +51,9 @@ cargo test -p bstk-compat         # 222 cases across nine suites
 
 `clients/run-smoke.sh` runs the Python `greenstalk` and Go `beanstalk`
 clients against both servers and diffs the normalized transcripts; set
-`SMOKE_TLS=1`, `SMOKE_HTTP=1` or `SMOKE_CLUSTER=1` for those paths.
+`SMOKE_TLS=1`, `SMOKE_HTTP=1` or `SMOKE_CLUSTER=1` for those paths, and
+`SMOKE_CLIENTS=php` for the PHP `pheanstalk` client (PHP 8.3+ and
+composer).
 
 ## Pull requests
 

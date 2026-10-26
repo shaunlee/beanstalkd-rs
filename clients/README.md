@@ -8,6 +8,14 @@ beanstalkd.
 |---|---|---|
 | Python | [greenstalk](https://pypi.org/project/greenstalk/) | `python/smoke.py` |
 | Go | [go-beanstalk](https://github.com/beanstalkd/go-beanstalk) v0.2.0 | `go/main.go` |
+| PHP | [Pheanstalk](https://github.com/pheanstalk/pheanstalk) 8 (Laravel's beanstalkd client) | `php/smoke.php` |
+
+The PHP client runs the same full flow, but not the restart, leader-kill
+or TLS variants: select it with `SMOKE_CLIENTS=php` in the default, binlog
+(`SMOKE_BINLOG=1`) and cluster (`SMOKE_CLUSTER=1`) modes. Pheanstalk returns
+stats as typed objects, so its transcript lists the fields in the order of
+the PHP properties, renamed to the protocol's names; the order is the same
+for both servers.
 
 Both also run over TLS and mTLS against `beanstalkd-rs` (see "TLS and
 mTLS modes"). `python/checks.py` holds the checks no client library can
@@ -258,8 +266,10 @@ Generated certificates and configuration files are removed when the run
 ends.
 
 Requirements: `python3` (a venv with greenstalk is created automatically),
-`openssl` (TLS modes), `curl` (`SMOKE_HTTP=1`) and, for the Go client, a Go
-toolchain (the module is fetched on first build).
+`openssl` (TLS modes), `curl` (`SMOKE_HTTP=1`), for the Go client a Go
+toolchain (the module is fetched on first build), and for the PHP client
+PHP 8.3 or newer with `composer` (`composer install` runs in `clients/php`,
+pinned by `composer.lock`).
 
 Environment overrides:
 
@@ -267,7 +277,7 @@ Environment overrides:
 |---|---|---|
 | `BSTK_REF_BIN` | `.ref/beanstalkd/beanstalkd` | reference binary |
 | `BSTK_RS_BIN` | built from source | `beanstalkd-rs` binary |
-| `SMOKE_CLIENTS` | `python go` | clients to run |
+| `SMOKE_CLIENTS` | `python go` | clients to run (`python`, `go`, `php`) |
 | `SMOKE_VENV` | `clients/python/.venv` | Python virtualenv location |
 | `SMOKE_TIMEOUT` | `120` | per-client watchdog, seconds |
 | `SMOKE_OUT` | a temp dir | where raw and normalized transcripts go |

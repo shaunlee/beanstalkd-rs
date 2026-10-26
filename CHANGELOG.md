@@ -18,6 +18,11 @@ Release tags are `v<version>` and match the workspace version in
   builds both architectures, smoke-tests each and pushes the image
   (`.github/workflows/image.yml`); it was pushed by hand before. 0.5.1 is
   available there as well.
+- **PHP client in the smoke tests**: Pheanstalk 8, the client Laravel's
+  beanstalkd queue driver uses, runs the full flow against the reference
+  and beanstalkd-rs (plain, binlog and cluster) and the transcripts must be
+  identical, like the Python and Go clients (`SMOKE_CLIENTS=php
+  clients/run-smoke.sh`; in CI on every push).
 
 ### Fixed
 

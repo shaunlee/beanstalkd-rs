@@ -99,6 +99,13 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
+      # Pheanstalk, the client of Laravel's beanstalkd queue driver, needs
+      # PHP 8.3 or newer.
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: "8.4"
+          tools: composer
+          coverage: none
       - name: Restore reference build
         id: ref
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -131,6 +138,12 @@ jobs:
         run: SMOKE_OUT="$RUNNER_TEMP/smoke/mtls" SMOKE_MTLS=1 SMOKE_RESTART=1 SMOKE_TOKEN=1 SMOKE_HTTP=1 clients/run-smoke.sh
       - name: Smoke (cluster)
         run: SMOKE_OUT="$RUNNER_TEMP/smoke/cluster" SMOKE_CLUSTER=1 clients/run-smoke.sh
+      - name: Smoke (PHP Pheanstalk; plain, binlog, cluster)
+        run: |
+          export SMOKE_CLIENTS=php
+          SMOKE_OUT="$RUNNER_TEMP/smoke/php-plain" clients/run-smoke.sh
+          SMOKE_OUT="$RUNNER_TEMP/smoke/php-binlog" SMOKE_BINLOG=1 clients/run-smoke.sh
+          SMOKE_OUT="$RUNNER_TEMP/smoke/php-cluster" SMOKE_CLUSTER=1 clients/run-smoke.sh
       - name: Smoke (cluster, leader kill)
         run: SMOKE_OUT="$RUNNER_TEMP/smoke/cluster-kill" SMOKE_CLUSTER_KILL=1 clients/run-smoke.sh
       - name: Upload transcripts

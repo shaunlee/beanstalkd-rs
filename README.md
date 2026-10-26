@@ -24,7 +24,8 @@ What you get for switching:
   to any node, a minority can be lost, and nodes can be added, removed or
   moved while the cluster serves.
 - **`unsafe` forbidden** at the workspace level, 222 differential test cases
-  against the C reference, and the Python and Go clients compared
+  against the C reference, and the Python, Go and PHP (Pheanstalk, the
+  client behind Laravel's queue driver) clients compared
   transcript-to-transcript against it.
 
 One binary, no runtime dependencies, MIT.
@@ -136,9 +137,10 @@ documentation and dependency updates. In test terms:
   ([tests/compat](tests/compat)).
 - **800+ tests** across the workspace, including crash/restart suites and a
   chaos harness ([tests/chaos](tests/chaos)).
-- **Real clients**: the Python `greenstalk` and Go `beanstalk` clients run the
-  same script against both servers and the normalized transcripts must be
-  identical ([clients/](clients)).
+- **Real clients**: the Python `greenstalk`, Go `beanstalk` and PHP
+  `pheanstalk` clients run the same script against both servers and the
+  normalized transcripts must be identical ([clients/](clients)).
+  Pheanstalk is what Laravel's beanstalkd queue driver uses.
 - **Fuzzing**: four targets (`proto_decode`, `raft_wire`,
   `snapshot_decode`, `wal_read`) with a seeded corpus ([fuzz/](fuzz)).
 - **`unsafe_code = "forbid"`** and `unwrap_used = "deny"` at the workspace
@@ -198,7 +200,7 @@ Every cell, the macOS run, the method and the raw data:
 
 | | beanstalkd | beanstalkd-rs |
 |---|---|---|
-| Protocol | the reference | every command, reply and edge case, checked against the reference by differential tests and real Python and Go clients |
+| Protocol | the reference | every command, reply and edge case, checked against the reference by differential tests and real Python, Go and PHP clients |
 | Command line | `-l -p -z -b -f -F -s -u -V -v` | the same, except `-u` (leave the user switch to the service manager) |
 | Throughput, 10–100 connections | baseline | 1.2–1.4× ([Performance](#performance)) |
 | Persistence | binlog | write-ahead log with the same fsync policies (`-b`, `-f`, `-F`); no reply before its change is logged; on a disk error it stops instead of carrying on without a log |
@@ -227,7 +229,7 @@ behaves like the reference.
 - [docs/BENCH.md](docs/BENCH.md): performance results
 - [docs/PLAN.md](docs/PLAN.md): development, test and acceptance plan
 - [scripts/demo.sh](scripts/demo.sh): the demo above
-- [clients/](clients): the Python and Go client runs compared against the reference
+- [clients/](clients): the Python, Go and PHP client runs compared against the reference
 - [CHANGELOG.md](CHANGELOG.md): changes per release
 
 ## License

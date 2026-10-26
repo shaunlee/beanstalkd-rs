@@ -8,3 +8,5 @@
 /fuzz/corpus
 /fuzz/artifacts
 /fuzz/coverage
+# Composer dependencies of the PHP smoke client
+/clients/php/vendor

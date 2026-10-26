@@ -1,0 +1,13 @@
+{
+    "name": "beanstalkd-rs/smoke-php",
+    "description": "Real-client smoke test for beanstalkd-rs with Pheanstalk (Laravel's beanstalkd client)",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.3",
+        "pda/pheanstalk": "^8.0"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

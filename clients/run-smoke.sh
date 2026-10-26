@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Real-client smoke tests: runs each client (Python greenstalk, Go
-# go-beanstalk) against a fresh reference beanstalkd and a fresh
+# go-beanstalk, and on request PHP Pheanstalk) against a fresh reference beanstalkd and a fresh
 # beanstalkd-rs, normalizes both transcripts (clients/normalize.py) and
 # diffs them. Exits non-zero on any client assertion failure, hang
 # (watchdog), or transcript difference.
@@ -9,7 +9,11 @@
 #   BSTK_REF_BIN   reference binary   (default: .ref/beanstalkd/beanstalkd)
 #   BSTK_RS_BIN    beanstalkd-rs      (default: built via cargo --release)
 #   SMOKE_VENV     Python venv dir    (default: clients/python/.venv)
-#   SMOKE_CLIENTS  clients to run     (default: "python go")
+#   SMOKE_CLIENTS  clients to run     (default: "python go"; also "php",
+#                  which needs php 8.3+ and composer, and implements only
+#                  the full flow: it runs in the default, binlog and
+#                  cluster modes, not with SMOKE_RESTART, SMOKE_CLUSTER_KILL,
+#                  SMOKE_TLS or SMOKE_MTLS)
 #   SMOKE_TIMEOUT  per-client watchdog in seconds (default: 120)
 #   SMOKE_OUT      where transcripts are kept (default: a temp dir)
 #   SMOKE_BINLOG   1: run both servers with -b <fresh dir under SMOKE_OUT>
@@ -85,6 +89,14 @@ if [ "$SMOKE_CLUSTER" = 1 ]; then
     [ "${!v}" = 1 ] && die "SMOKE_CLUSTER=1 cannot be combined with $v=1"
   done
 fi
+
+case " $SMOKE_CLIENTS " in
+  *" php "*)
+    for v in SMOKE_RESTART SMOKE_CLUSTER_KILL SMOKE_TLS SMOKE_MTLS; do
+      [ "${!v}" = 1 ] && die "the php client implements only the full flow; it cannot run with $v=1"
+    done
+    ;;
+esac
 
 if [ ! -x "$REF_BIN" ]; then
   die "reference binary not found at $REF_BIN (run scripts/build-ref.sh or set BSTK_REF_BIN)"
@@ -471,6 +483,13 @@ prepare_go() {
   CLIENT_CMD=("$OUT/smoke-go")
 }
 
+prepare_php() {
+  command -v php >/dev/null || die "php not found (the php client needs php 8.3+ and composer)"
+  command -v composer >/dev/null || die "composer not found (the php client needs php 8.3+ and composer)"
+  (cd "$CLIENTS_DIR/php" && composer install -q --no-interaction --no-progress)
+  CLIENT_CMD=(php "$CLIENTS_DIR/php/smoke.php")
+}
+
 if [ "$SMOKE_TLS" = 1 ] || [ "$SMOKE_TOKEN" = 1 ]; then
   "$CLIENTS_DIR/mkcerts.sh" "$CERTS"
 fi
@@ -488,6 +507,7 @@ for client in $SMOKE_CLIENTS; do
   case "$client" in
     python) prepare_python ;;
     go) prepare_go ;;
+    php) prepare_php ;;
     *) die "unknown client: $client" ;;
   esac
 
