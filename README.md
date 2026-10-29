@@ -54,7 +54,7 @@ the jobs are still there:
 ```console
 $ ./scripts/demo.sh
 
-beanstalkd-rs 0.5.1
+beanstalkd-rs 0.5.2
 protocol on 127.0.0.1:56386, HTTP on 127.0.0.1:56387
 
 [1/3] the beanstalkd protocol: put, reserve, delete, bury
@@ -131,8 +131,9 @@ each):
 
 ## Is it ready?
 
-0.5.1 is the current release; it differs from 0.5.0 only in packaging,
-documentation and dependency updates. In test terms:
+0.5.2 is the current release; it differs from 0.5.0 only in packaging,
+documentation, dependency updates and startup and shutdown log lines. In
+test terms:
 
 - **222 differential cases** replay the same operations against the reference
   C implementation and require identical replies

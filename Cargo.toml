@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/proto", "crates/engine", "crates/store", "crates/engine-oracle", "crates/raft", "crates/net", "crates/server", "tests/compat", "tests/chaos", "bench"]
 
 [workspace.package]
-version = "0.5.1"
+version = "0.5.2"
 edition = "2024"
 rust-version = "1.98"
 license = "MIT"
@@ -23,12 +23,12 @@ clap = { version = "4", features = ["derive"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 proptest = "1"
-bstk-proto = { version = "0.5.1", path = "crates/proto" }
-bstk-engine = { version = "0.5.1", path = "crates/engine" }
-bstk-store = { version = "0.5.1", path = "crates/store" }
-bstk-engine-oracle = { version = "0.5.1", path = "crates/engine-oracle" }
-bstk-raft = { version = "0.5.1", path = "crates/raft" }
-bstk-net = { version = "0.5.1", path = "crates/net" }
+bstk-proto = { version = "0.5.2", path = "crates/proto" }
+bstk-engine = { version = "0.5.2", path = "crates/engine" }
+bstk-store = { version = "0.5.2", path = "crates/store" }
+bstk-engine-oracle = { version = "0.5.2", path = "crates/engine-oracle" }
+bstk-raft = { version = "0.5.2", path = "crates/raft" }
+bstk-net = { version = "0.5.2", path = "crates/net" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

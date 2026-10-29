@@ -11,6 +11,12 @@ Release tags are `v<version>` and match the workspace version in
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-29
+
+Logging, packaging and test changes: no protocol, binlog, cluster or
+command line changes, so 0.5.0, 0.5.1 and 0.5.2 are interchangeable and a
+rolling upgrade between them is a plain restart.
+
 ### Added
 
 - **Container image on ghcr.io**: `ghcr.io/shaunlee/beanstalkd-rs`, the
@@ -154,6 +160,7 @@ clients can use unmodified.
   ([packaging/](https://github.com/shaunlee/beanstalkd-rs/tree/main/packaging))
   and `scripts/mkcluster-certs.sh` for a cluster CA and node certificates.
 
-[Unreleased]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/shaunlee/beanstalkd-rs/releases/tag/v0.5.0
