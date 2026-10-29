@@ -95,7 +95,7 @@ docker volume create bstk-data
 docker run -d --init --name bstk -p 127.0.0.1:11300:11300 -v bstk-data:/data \
     beanstalkd-rs -l 0.0.0.0 -p 11300 -b /data -V
 docker inspect -f '{{.State.Health.Status}}' bstk     # healthy after ~10 s
-docker logs bstk
+docker logs bstk                                      # "ready: accepting connections" (section 2.4)
 docker stop bstk                                      # SIGTERM: graceful, exit status 0
 ```
 
@@ -333,6 +333,26 @@ Logs go to stderr. `[log] level` is `error`, `warn` (default), `info`,
 (default) or `json` (one JSON object per line, for log shippers). Colors
 (ANSI escape codes) are used only when stderr is a terminal, so journald,
 `docker logs` and log files get plain text.
+
+Startup and shutdown are logged at every level, `error` included, under
+the target `beanstalkd_rs::lifecycle` (the `target` key in `json`), so
+`docker logs` or journald shows whether the server came up and whether it
+exited cleanly:
+
+```text
+INFO beanstalkd_rs::lifecycle: beanstalkd-rs starting version="0.5.1" pid=1
+INFO beanstalkd_rs::lifecycle: ready: accepting connections listeners=0.0.0.0:11300 storage=binlog /data startup_ms=4
+INFO beanstalkd_rs::lifecycle: SIGTERM received: shutting down
+INFO beanstalkd_rs::lifecycle: shutdown complete
+```
+
+`ready` comes once the binlog is replayed (`binlog replayed` gives the
+directory and the number of jobs; in cluster mode, once the node
+has caught up with a leader, after `waiting for a leader`) and clients
+are accepted; `listeners` also lists the HTTP listener, and `storage` is
+`memory`, `binlog <dir>` or `cluster node <id>`. A process that stops
+without `shutdown complete` exited on an error, printed just before, or
+was killed.
 
 What each level shows:
 
@@ -1652,5 +1672,6 @@ extensions (token authentication).
   stop (section 6.2).
 - **No configuration reload**: every change needs a restart (a rolling
   one in a cluster).
-- **Logging**: one level for everything; at `info` in cluster mode the
-  embedded Raft library is verbose (section 2.4).
+- **Logging**: one level for everything except the startup and shutdown
+  lines, which are always shown; at `info` in cluster mode the embedded
+  Raft library is verbose (section 2.4).

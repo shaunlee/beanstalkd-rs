@@ -1367,6 +1367,7 @@ pub async fn start(args: StartArgs<'_>) -> Result<ClusterNode, StartError> {
         // differ from the other initial nodes'): it joins.
         (false, true, _) if !c.initial_voters.contains(&id) => {
             tracing::info!(
+                target: crate::LIFECYCLE,
                 initial_voters = ?c.initial_voters,
                 "--cluster-init: this node is not an initial voter; it joins the cluster once \
                  the initial voters have created it and the operator has added it"
@@ -1551,12 +1552,13 @@ pub async fn start(args: StartArgs<'_>) -> Result<ClusterNode, StartError> {
 
     match mode {
         Mode::Rejoin => {
+            tracing::info!(target: crate::LIFECYCLE, "rejoining the cluster: waiting for a leader");
             if let Err(e) = core.rejoin(&rejoin_targets).await {
                 abort_all(&mut tasks);
                 return Err(e);
             }
         }
-        Mode::Bootstrap => tracing::info!("waiting for a leader"),
+        Mode::Bootstrap => tracing::info!(target: crate::LIFECYCLE, "waiting for a leader"),
         Mode::Restart => {
             // A warning, not an exit: the entry may be an uncommitted one
             // that a new leader truncates.
@@ -1569,7 +1571,7 @@ pub async fn start(args: StartArgs<'_>) -> Result<ClusterNode, StartError> {
                      confirms the removal; until then it waits for a leader"
                 );
             }
-            tracing::info!("waiting for a leader");
+            tracing::info!(target: crate::LIFECYCLE, "waiting for a leader");
         }
     }
     // Connection numbers: above everything an earlier process may have

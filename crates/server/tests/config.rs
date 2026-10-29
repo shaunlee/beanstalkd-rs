@@ -157,6 +157,41 @@ fn json_log_format() {
         assert!(v["level"].is_string() && v["fields"].is_object(), "{line}");
     }
     assert!(log.contains("beanstalkd-rs listening"), "{log}");
+    let ready = log
+        .lines()
+        .find(|l| l.contains("ready: accepting connections"))
+        .unwrap_or_else(|| panic!("no ready line in {log}"));
+    let v: serde_json::Value = serde_json::from_str(ready).unwrap();
+    assert_eq!(v["target"], "beanstalkd_rs::lifecycle", "{ready}");
+}
+
+/// Startup and shutdown are logged at every level, so `docker logs` shows
+/// whether the server came up and exited cleanly; the rest of `info` stays
+/// hidden below it.
+#[test]
+fn lifecycle_is_logged_below_info() {
+    for log_section in ["", "[log]\nlevel = \"error\"\n"] {
+        let (mut server, _) = ConfigServer::start(
+            &format!("[[listener]]\naddr = \"127.0.0.1:{{port0}}\"\n{log_section}"),
+            1,
+            &[],
+        );
+        let addr = server.addr(0);
+        let status = server.stop(nix::sys::signal::Signal::SIGTERM);
+        assert!(status.success());
+        let log = server.stderr();
+        for line in [
+            "beanstalkd-rs starting",
+            "ready: accepting connections",
+            "SIGTERM received: shutting down",
+            "shutdown complete",
+        ] {
+            assert!(log.contains(line), "{line:?} missing from {log}");
+        }
+        assert!(log.contains(&format!("listeners={addr}")), "{log}");
+        assert!(log.contains("storage=memory"), "{log}");
+        assert!(!log.contains("beanstalkd-rs listening"), "{log}");
+    }
 }
 
 /// Logs written to a file (or journald, or `docker logs`) carry no ANSI

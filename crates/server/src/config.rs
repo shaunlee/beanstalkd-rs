@@ -211,6 +211,7 @@ impl LogLevel {
         }
     }
 
+    #[cfg(test)]
     pub fn to_tracing(self) -> tracing::Level {
         match self {
             LogLevel::Error => tracing::Level::ERROR,
@@ -221,7 +222,7 @@ impl LogLevel {
         }
     }
 
-    fn as_str(self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             LogLevel::Error => "error",
             LogLevel::Warn => "warn",

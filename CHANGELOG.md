@@ -24,6 +24,17 @@ Release tags are `v<version>` and match the workspace version in
   identical, like the Python and Go clients (`SMOKE_CLIENTS=php
   clients/run-smoke.sh`; in CI on every push).
 
+### Changed
+
+- **Startup and shutdown are logged at every level**: `beanstalkd-rs
+  starting` (version, pid), `binlog replayed` (jobs recovered), `waiting
+  for a leader` in cluster mode, `ready: accepting connections`
+  (listeners, storage, startup time), the signal received and `shutdown
+  complete` now appear with the default `warn` level too, so `docker logs`
+  shows whether the server is up and whether it exited cleanly. They use
+  the target `beanstalkd_rs::lifecycle`; the rest of `info` stays hidden
+  by default.
+
 ### Fixed
 
 - **`cargo binstall bstkd`**: the `bin-dir` in `[package.metadata.binstall]`

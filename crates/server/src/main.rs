@@ -51,12 +51,14 @@ use std::net::SocketAddr;
 use std::process::ExitCode;
 use std::sync::Arc;
 use std::sync::atomic::AtomicU64;
+use std::time::Instant;
 
 use tokio::net::{TcpListener, TcpSocket};
 use tokio::signal::unix::{SignalKind, signal};
 use tokio::sync::{mpsc, oneshot, watch};
 use tokio::task::JoinHandle;
 use tokio_rustls::TlsAcceptor;
+use tracing_subscriber::EnvFilter;
 
 use bstk_engine::{Engine, EngineConfig};
 use bstk_store::{Wal, WalError};
@@ -78,7 +80,15 @@ const EXIT_USAGE: i32 = 5;
 /// `srv_acquire_wal`: the binlog directory is locked by another process.
 const EXIT_LOCKED: u8 = 10;
 
+/// Target of the startup and shutdown events, which `init_logging` lets
+/// through at `info` whatever `[log] level` is: an operator (`docker logs`,
+/// journald) must see that the server came up and that it exited cleanly,
+/// and the default `warn` hides the rest of `info` because openraft is
+/// verbose there.
+pub(crate) const LIFECYCLE: &str = "beanstalkd_rs::lifecycle";
+
 fn main() -> ExitCode {
+    let started = Instant::now();
     let cli = Cli::from_env();
 
     if let Some(cli::Sub::Cluster(args)) = &cli.sub {
@@ -113,6 +123,12 @@ fn main() -> ExitCode {
     };
 
     init_logging(config.log);
+    tracing::info!(
+        target: LIFECYCLE,
+        version = env!("CARGO_PKG_VERSION"),
+        pid = std::process::id(),
+        "beanstalkd-rs starting"
+    );
     for w in &config.warnings {
         tracing::warn!("{w}");
     }
@@ -186,6 +202,16 @@ fn main() -> ExitCode {
 
     let (stop_tx, stop_rx) = watch::channel(false);
 
+    let ready = ReadyInfo {
+        started,
+        http: config.http.as_ref().map(|h| h.addr),
+        storage: match (&cluster_settings, &config.binlog.dir) {
+            (Some(c), _) => format!("cluster node {}", c.node_id),
+            (None, Some(dir)) => format!("binlog {}", dir.display()),
+            (None, None) => "memory".to_owned(),
+        },
+    };
+
     let counters = ServerCounters::new(config.max_pending_connections);
 
     // Started before the binlog replay, so /healthz and /readyz answer
@@ -252,8 +278,8 @@ fn main() -> ExitCode {
         },
         http,
         cluster,
+        ready,
         stop_tx,
-        stop_rx,
     ))
 }
 
@@ -313,14 +339,21 @@ async fn start_cluster(args: cluster::StartArgs<'_>) -> Result<cluster::ClusterN
             }
         },
         _ = sigint.recv() => {
-            tracing::info!("SIGINT received during cluster startup: exiting");
+            tracing::info!(target: LIFECYCLE, "SIGINT received during cluster startup: exiting");
             Err(ExitCode::SUCCESS)
         }
         _ = sigterm.recv() => {
-            tracing::info!("SIGTERM received during cluster startup: exiting");
+            tracing::info!(target: LIFECYCLE, "SIGTERM received during cluster startup: exiting");
             Err(ExitCode::SUCCESS)
         }
     }
+}
+
+/// What the "ready" line reports besides the client listeners.
+struct ReadyInfo {
+    started: Instant,
+    http: Option<SocketAddr>,
+    storage: String,
 }
 
 struct ConnSettings {
@@ -358,8 +391,9 @@ fn check_config(cli: &Cli) -> ExitCode {
 fn init_logging(log: LogSettings) {
     // Color codes only help a person at a terminal; journald, `docker logs`
     // and log files would store them as literal escape sequences.
+    let filter = EnvFilter::new(format!("{},{LIFECYCLE}=info", log.level.as_str()));
     let builder = tracing_subscriber::fmt()
-        .with_max_level(log.level.to_tracing())
+        .with_env_filter(filter)
         .with_ansi(io::stderr().is_terminal())
         .with_writer(io::stderr);
     match log.format {
@@ -476,6 +510,7 @@ fn start_engine(
                 }
             };
             tracing::info!(
+                target: LIFECYCLE,
                 dir = %dir.display(),
                 jobs = recovery.jobs.len(),
                 sync = ?sync,
@@ -501,8 +536,8 @@ async fn serve(
     settings: ConnSettings,
     http: Option<(Arc<http::HttpState>, JoinHandle<()>)>,
     cluster: Option<cluster::ClusterNode>,
+    ready: ReadyInfo,
     stop_tx: watch::Sender<bool>,
-    stop_rx: watch::Receiver<bool>,
 ) -> ExitCode {
     // SIGUSR1 enters drain mode (never leaves it, matching the reference);
     // SIGINT/SIGTERM stop accepting, let the actor sync the binlog, and
@@ -527,11 +562,22 @@ async fn serve(
         Some(c) => conn::ConnIds::Cluster(c.conn_ids.clone()),
     });
     let clients = cluster.as_ref().map(|c| c.clients());
+    let mut endpoints: Vec<String> = listeners
+        .iter()
+        .filter_map(|b| {
+            let addr = b.listener.local_addr().ok()?;
+            Some(match b.kind {
+                Kind::Plain => addr.to_string(),
+                Kind::Tls { .. } => format!("{addr} (tls)"),
+            })
+        })
+        .collect();
+    endpoints.extend(ready.http.map(|addr| format!("{addr} (http)")));
     let mut tasks = Vec::with_capacity(listeners.len() + 1);
     for Bound { listener, kind } in listeners {
         let engine_tx = engine_tx.clone();
         let next_id = Arc::clone(&next_id);
-        let stop = stop_rx.clone();
+        let stop = stop_tx.subscribe();
         tasks.push(match kind {
             Kind::Plain => tokio::spawn(accept_plain(
                 listener,
@@ -564,6 +610,13 @@ async fn serve(
         state.set_ready(engine_tx.clone());
         tasks.push(task);
     }
+    tracing::info!(
+        target: LIFECYCLE,
+        listeners = %endpoints.join(", "),
+        storage = %ready.storage,
+        startup_ms = u64::try_from(ready.started.elapsed().as_millis()).unwrap_or(u64::MAX),
+        "ready: accepting connections"
+    );
 
     loop {
         tokio::select! {
@@ -572,11 +625,11 @@ async fn serve(
                 let _ = engine_tx.send(EngineMsg::SetDraining(true));
             }
             _ = sigint.recv() => {
-                tracing::info!("SIGINT received: shutting down");
+                tracing::info!(target: LIFECYCLE, "SIGINT received: shutting down");
                 break;
             }
             _ = sigterm.recv() => {
-                tracing::info!("SIGTERM received: shutting down");
+                tracing::info!(target: LIFECYCLE, "SIGTERM received: shutting down");
                 break;
             }
         }
@@ -597,6 +650,7 @@ async fn serve(
     if let Some(c) = cluster {
         c.shutdown().await;
     }
+    tracing::info!(target: LIFECYCLE, "shutdown complete");
     ExitCode::SUCCESS
 }
 
