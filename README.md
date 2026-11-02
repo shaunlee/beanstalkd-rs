@@ -217,7 +217,7 @@ Every cell, the macOS run, the method and the raw data:
 | SIGUSR1 | drain mode | drain mode (cluster-wide in a cluster) |
 | Threads | one | one, or two with TLS, a binlog or a cluster; `--threads N` |
 | Memory safety | C | Rust, no `unsafe` code (`unsafe_code = "forbid"`) |
-| Packages | distribution packages | crates.io (`bstkd`), release archives for Linux x86_64 and aarch64 (glibc or static musl) and macOS aarch64 with a systemd unit, and a Docker image (`shonhen/beanstalkd-rs`) |
+| Packages | distribution packages | crates.io (`bstkd`), release archives for Linux x86_64 and aarch64 (glibc or static musl) and macOS aarch64 with a systemd unit, and a container image (`shonhen/beanstalkd-rs`, also `ghcr.io/shaunlee/beanstalkd-rs`) |
 
 The few intentional behavior differences are listed in
 [docs/COMPAT.md](docs/COMPAT.md); with no configuration file the server
@@ -231,6 +231,7 @@ behaves like the reference.
 - [docs/COMPAT.md](docs/COMPAT.md): differences from the reference beanstalkd
 - [docs/BENCH.md](docs/BENCH.md): performance results
 - [docs/PLAN.md](docs/PLAN.md): development, test and acceptance plan
+- [TODO.md](TODO.md): open work, and what to pick up first
 - [scripts/demo.sh](scripts/demo.sh): the demo above
 - [clients/](clients): the Python, Go and PHP client runs compared against the reference
 - [CHANGELOG.md](CHANGELOG.md): changes per release

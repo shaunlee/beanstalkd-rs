@@ -16,6 +16,8 @@ Thanks for taking the time to report a bug, propose a change or send a patch.
   it.
 - **A security problem** does not go in an issue; see
   [SECURITY.md](SECURITY.md).
+- **Looking for something to do?** [TODO.md](TODO.md) lists the open work,
+  with the self-contained items marked `good first issue`.
 
 ## Building
 
