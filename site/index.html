@@ -3,199 +3,293 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>beanstalkd-rs: a drop-in replacement for beanstalkd, in Rust</title>
-<meta name="description" content="A drop-in replacement for beanstalkd, the simple work queue, written in Rust. The same protocol byte for byte, 1.2–1.4× the throughput, 2.2× with a binlog, TLS, Prometheus metrics and optional Raft replication.">
+<title>beanstalkd-rs: the same work queue, rebuilt in Rust</title>
+<meta name="description" content="A drop-in replacement for beanstalkd, written in Rust. Byte-for-byte protocol compatible, 1.2–1.4× the throughput, 2.2× with a binlog, with TLS, Prometheus metrics and optional Raft replication built in.">
 <link rel="canonical" href="https://shaunlee.github.io/beanstalkd-rs/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="beanstalkd-rs">
+<meta property="og:title" content="beanstalkd-rs: the same work queue, rebuilt in Rust">
 <meta property="og:description" content="A byte-for-byte replacement for beanstalkd, in Rust.">
 <meta property="og:url" content="https://shaunlee.github.io/beanstalkd-rs/">
 <meta property="og:image" content="https://shaunlee.github.io/beanstalkd-rs/images/social-preview.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="640">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0f1523">
+<meta name="color-scheme" content="dark">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="top wrap">
-  <a class="brand" href="./"><span class="bar"></span>beanstalkd-rs</a>
-  <nav>
-    <a href="#try">Try it</a>
-    <a href="#performance">Performance</a>
-    <a href="#docs">Docs</a>
-    <a href="https://github.com/shaunlee/beanstalkd-rs">GitHub</a>
-  </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 28 28">
+    <path d="M13.4 14.2c-1-3.6-3.9-5.9-7.9-6.1.3 3.9 3.3 6.4 7.9 6.1Z" fill="currentColor"/>
+    <path d="M14.6 12.6c.4-4.3 3-7.4 7.4-8.3.4 4.5-2.6 7.8-7.4 8.3Z" fill="currentColor"/>
+    <path d="M14 13.5c.3 3.3 0 6.1-2.1 8.2-2.2 2.2-6 1.7-6.6-1-.6-2.6 2.2-4.2 4.1-2.8 1.6 1.2.8 3.4-.8 3.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M16.6 17.4c2.5-.9 5.3.5 5.6 3.2.3 2.4-1.7 4.2-4 3.9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="copy" viewBox="0 0 20 20">
+    <rect x="7" y="7" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M13 4.5V4a1.5 1.5 0 0 0-1.5-1.5h-7A1.5 1.5 0 0 0 3 4v7a1.5 1.5 0 0 0 1.5 1.5H5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  </symbol>
+  <symbol id="check" viewBox="0 0 20 20">
+    <path d="m4.5 10.5 3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="./"><svg class="mark" aria-hidden="true"><use href="#mark"/></svg>beanstalkd-rs</a>
+    <nav aria-label="Main">
+      <a href="#features">Features</a>
+      <a href="#performance">Performance</a>
+      <a href="#compare">Compare</a>
+      <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">Docs</a>
+      <a class="btn btn-primary btn-sm" href="https://github.com/shaunlee/beanstalkd-rs">GitHub</a>
+    </nav>
+  </div>
 </header>
 
 <main>
 
-<section class="hero wrap">
-  <p class="eyebrow">MIT · no unsafe code</p>
-  <h1>beanstalkd-rs</h1>
-  <p class="lede">A drop-in replacement for
-    <a href="https://github.com/beanstalkd/beanstalkd">beanstalkd</a>, the simple
-    work queue, written in Rust. The protocol is the reference's, byte for byte,
-    so existing clients work unmodified.</p>
-
-  <div class="install">
-    <pre><code><span class="p">$</span> cargo install bstkd</code></pre>
-    <a class="button" href="https://github.com/shaunlee/beanstalkd-rs">View on GitHub</a>
+<section class="hero">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="hero-eyebrow">Drop-in replacement for beanstalkd</p>
+      <h1>The same work queue.<br>Rebuilt in Rust.</h1>
+      <p class="hero-lede">Byte-for-byte protocol compatible, so existing clients work unmodified. Faster, with TLS, metrics and optional Raft replication built in.</p>
+      <div class="chip">
+        <code><span class="prompt">$</span> <span id="cmd-install">cargo install bstkd</span></code>
+        <button class="copy" type="button" data-copy="cmd-install" aria-label="Copy the install command"><svg><use href="#copy"/></svg></button>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="#get-started">Get started</a>
+        <a class="btn btn-secondary" href="https://github.com/shaunlee/beanstalkd-rs">View on GitHub</a>
+      </div>
+    </div>
+    <div class="terminal" role="img" aria-label="Output of scripts/demo.sh: a job is put, reserved and deleted, then SIGTERM syncs the binlog and exits 0">
+      <div class="terminal-title">demo.sh</div>
+<pre class="terminal-body" aria-hidden="true"><span class="o">$</span> ./scripts/demo.sh
+<span class="o">producer</span>  put <span class="o">0 0 60 17</span>   -&gt; <span class="o">INSERTED 1</span>
+<span class="o">worker</span>    reserve         -&gt; <span class="o">RESERVED 1 17</span>
+<span class="o">worker</span>    delete <span class="o">1</span>        -&gt; <span class="o">DELETED</span>
+<span class="o">SIGTERM</span>   exit <span class="o">0</span>, binlog synced</pre>
+    </div>
   </div>
-
-  <dl class="stats">
-    <div><dt class="accent">2.2×</dt><dd>throughput with a binlog and fsync</dd></div>
-    <div><dt>1.2–1.4×</dt><dd>throughput at 10–100 connections</dd></div>
-    <div><dt>3 or 5</dt><dd>nodes, Raft-replicated (optional)</dd></div>
-  </dl>
-</section>
-
-<section class="wrap">
-  <h2>What you get for switching</h2>
-  <ul class="features">
-    <li><h3>Faster, on less CPU</h3>
-      <p>1.2–1.4× the throughput at 10–100 connections and 2.2× with a binlog
-      and fsync, with 10–24% less CPU per operation.</p></li>
-    <li><h3>Production features built in</h3>
-      <p>TLS, mutual TLS and token authentication per listener, Prometheus
-      <code>/metrics</code>, <code>/healthz</code>, <code>/readyz</code>, a TOML
-      configuration file and graceful shutdown, with no proxy in front.</p></li>
-    <li><h3>Optional Raft replication</h3>
-      <p>3 or 5 nodes over mutual TLS. Clients connect to any node, a minority
-      can be lost, and nodes can be added, removed or moved while the cluster
-      serves.</p></li>
-    <li><h3>Checked against the reference</h3>
-      <p><code>unsafe</code> forbidden at the workspace level, 222 differential
-      test cases against the C reference, and the Python, Go and PHP
-      (Pheanstalk, the client behind Laravel's queue driver) clients compared
-      transcript-to-transcript against it.</p></li>
-  </ul>
-  <p class="note">One binary, no runtime dependencies, MIT.</p>
-</section>
-
-<section class="wrap" id="try">
-  <h2>Try it</h2>
-  <p>Docker (linux/amd64 and linux/arm64; also
-    <code>ghcr.io/shaunlee/beanstalkd-rs</code>):</p>
-  <pre><code>docker run -d --name bstk -p 127.0.0.1:11300:11300 -v bstk-data:/data \
-  shonhen/beanstalkd-rs -l 0.0.0.0 -p 11300 -b /data</code></pre>
-  <p>Or from crates.io (Rust 1.98 or newer; the binary is called
-    <code>beanstalkd-rs</code>):</p>
-  <pre><code>cargo install bstkd        # or: cargo binstall bstkd
-beanstalkd-rs -l 127.0.0.1 -p 11300 -b ./binlog</code></pre>
-  <p>Release archives for Linux x86_64 and aarch64 (glibc or static musl) and
-    macOS aarch64 are on the
-    <a href="https://github.com/shaunlee/beanstalkd-rs/releases">releases page</a>.
-    Each holds the binary, a systemd unit, example configurations, the cluster
-    certificate script and the
-    <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">operations guide</a>.</p>
-</section>
-
-<section class="wrap" id="performance">
-  <h2>Performance</h2>
-  <p>Operations per second, beanstalkd-rs against beanstalkd (<code>25085c5</code>,
-    built with <code>-O2</code>), both with default settings, on Linux 7.0
-    (aarch64) in an OrbStack VM on an Apple M6: servers on 6 cores, the load
-    generator on the other 6, loopback, 5 alternated runs per cell, medians.
-    16-byte job bodies unless noted.</p>
-  <figure class="chart">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="images/perf-dark.svg">
-      <img src="images/perf-light.svg" width="820" height="420"
-        alt="Operations per second, beanstalkd against beanstalkd-rs, for the workloads in the table below">
-    </picture>
-  </figure>
-  <div class="scroll">
-  <table>
-    <thead><tr><th>Workload</th><th class="n">beanstalkd</th><th class="n">beanstalkd-rs</th><th class="n"></th></tr></thead>
-    <tbody>
-      <tr><td>put-reserve-delete, 1 connection</td><td class="n">56,176</td><td class="n">53,943</td><td class="n">0.96×</td></tr>
-      <tr><td>put-reserve-delete, 10 connections</td><td class="n">339,283</td><td class="n">468,310</td><td class="n"><b>1.38×</b></td></tr>
-      <tr><td>put-reserve-delete, 100 connections</td><td class="n">392,713</td><td class="n">516,336</td><td class="n"><b>1.31×</b></td></tr>
-      <tr><td>put-reserve-delete, 100 connections, 4 KiB bodies</td><td class="n">362,247</td><td class="n">463,416</td><td class="n"><b>1.28×</b></td></tr>
-      <tr><td>put-reserve-delete, 100 connections, 16 pipelined</td><td class="n">490,247</td><td class="n">643,204</td><td class="n"><b>1.31×</b></td></tr>
-      <tr><td>producers and consumers, 100 connections</td><td class="n">422,349</td><td class="n">500,891</td><td class="n"><b>1.19×</b></td></tr>
-      <tr><td>with a binlog (<code>-b</code>, default fsync), 100 connections</td><td class="n">267,391</td><td class="n">594,148</td><td class="n"><b>2.22×</b></td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p>One connection is bound by round-trip latency, where beanstalkd-rs is 4%
-    slower on Linux and equal on macOS. Memory per small job is 249 against 219
-    bytes (1.13×), equal for 4 KiB jobs. Every cell, the macOS run, the method and
-    the raw data:
-    <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/BENCH.md">docs/BENCH.md</a>.</p>
-</section>
-
-<section class="wrap">
-  <h2>beanstalkd-rs and beanstalkd</h2>
-  <div class="scroll">
-  <table class="compare">
-    <thead><tr><th></th><th>beanstalkd</th><th>beanstalkd-rs</th></tr></thead>
-    <tbody>
-      <tr><th>Protocol</th><td>the reference</td><td>every command, reply and edge case, checked against the reference by differential tests and real Python, Go and PHP clients</td></tr>
-      <tr><th>Command line</th><td><code>-l -p -z -b -f -F -s -u -V -v</code></td><td>the same, except <code>-u</code> (leave the user switch to the service manager)</td></tr>
-      <tr><th>Persistence</th><td>binlog</td><td>write-ahead log with the same fsync policies (<code>-b</code>, <code>-f</code>, <code>-F</code>); on a disk error it stops instead of carrying on without a log</td></tr>
-      <tr><th>Replication and failover</th><td>—</td><td>Raft cluster of 3 or 5 nodes over mutual TLS; keeps serving through the loss of a minority</td></tr>
-      <tr><th>TLS</th><td>— (needs a proxy such as stunnel)</td><td>built in: several listeners, each plaintext or TLS</td></tr>
-      <tr><th>Authentication</th><td>—</td><td>mutual TLS or a token per listener</td></tr>
-      <tr><th>Monitoring</th><td><code>stats</code> commands</td><td>the same, plus <code>/healthz</code>, <code>/readyz</code>, Prometheus <code>/metrics</code> and JSON <code>/admin</code></td></tr>
-      <tr><th>Configuration</th><td>command line</td><td>command line or a TOML file</td></tr>
-      <tr><th>SIGTERM</th><td>killed</td><td>graceful: stops accepting, syncs the log, exits 0</td></tr>
-      <tr><th>Memory safety</th><td>C</td><td>Rust, no <code>unsafe</code> code</td></tr>
-    </tbody>
-  </table>
+  <div class="container">
+    <dl class="stats">
+      <div><dt class="accent">2.2×</dt><dd>throughput with a binlog</dd></div>
+      <div><dt>1.2–1.4×</dt><dd>at 10–100 connections</dd></div>
+      <div><dt>222</dt><dd>differential test cases</dd></div>
+      <div><dt>3 or 5</dt><dd>nodes, Raft-replicated</dd></div>
+    </dl>
   </div>
 </section>
 
-<section class="wrap two">
-  <div>
-    <h2>Migrating from beanstalkd</h2>
-    <p>Point an existing client at beanstalkd-rs and it works, including the
-      reference's parser quirks.</p>
-    <p><b>The binlog directory is not compatible.</b> beanstalkd-rs uses its own
-      on-disk format, so a migration drains the old server and switches rather
-      than swapping the binary under a full queue. The
-      <a href="https://github.com/shaunlee/beanstalkd-rs#migrating-from-beanstalkd">README</a>
-      has the steps, and
-      <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">docs/COMPAT.md</a>
-      lists every intentional behavior difference with the test that covers it.</p>
-  </div>
-  <div>
-    <h2>When something else fits better</h2>
-    <ul>
-      <li>Consumer groups, streams, replay or fan-out to independent consumers:
-        NATS, Kafka or Redis Streams model that; tubes do not.</li>
-      <li>A managed service and no operations: SQS, Cloud Tasks or a hosted
-        RabbitMQ.</li>
-      <li>Beanstalkd's exact on-disk binlog format: this project deliberately
-        does not keep it.</li>
+<section class="section" id="features">
+  <div class="container">
+    <header class="section-head center">
+      <p class="eyebrow">Features</p>
+      <h2>Everything beanstalkd does.<br>Plus what production needs.</h2>
+      <p class="sub">One binary, no runtime dependencies, MIT.</p>
+    </header>
+    <ul class="features">
+      <li class="card">
+        <svg class="icon" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="24" r="4"/><path d="M15 14.5v3M15 30.5v3M5.5 24h3M21.5 24h3M8.3 17.3l2.1 2.1M19.6 28.6l2.1 2.1M8.3 30.7l2.1-2.1M19.6 19.4l2.1-2.1"/><circle cx="15" cy="24" r="7"/><circle cx="28" cy="11" r="2.6"/><circle cx="28" cy="11" r="5"/><path d="M28 3.5v2.5M28 16v2.5M20.5 11H23M33 11h2.5M22.7 5.7l1.8 1.8M31.5 14.5l1.8 1.8M22.7 16.3l1.8-1.8M31.5 7.5l1.8-1.8"/></g></svg>
+        <h3>Drop-in compatible</h3>
+        <p>Every command, reply and edge case matches the reference, checked by 222 differential tests.</p>
+      </li>
+      <li class="card card-hot">
+        <svg class="icon" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.4 30.5A13.5 13.5 0 1 1 31.6 30.5"/><path d="M20 23.5l6-8"/><circle cx="20" cy="24" r="1.8"/><path d="M14 33h12M20 7v2.5M9.4 13.4l1.8 1.8M30.6 13.4l-1.8 1.8M6 24h2.5M34 24h-2.5"/></g></svg>
+        <h3>Faster, on less CPU</h3>
+        <p>1.2–1.4× the throughput at 10–100 connections, with 10–24% less CPU per operation.</p>
+      </li>
+      <li class="card">
+        <svg class="icon" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="17" width="20" height="16" rx="2.5"/><path d="M9.5 17v-5a5.5 5.5 0 0 1 11 0v5"/><circle cx="15" cy="24" r="1.6"/><path d="M15 25.6v3"/><circle cx="30.5" cy="19" r="4"/><path d="M30.5 23v10M30.5 28h2.5M30.5 31h2"/></g></svg>
+        <h3>TLS and authentication</h3>
+        <p>TLS, mutual TLS and token authentication per listener. No proxy in front.</p>
+      </li>
+      <li class="card">
+        <svg class="icon" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 19c4-6 9-9 14.5-9s10.5 3 14.5 9c-4 6-9 9-14.5 9S7.5 25 3.5 19Z"/><circle cx="18" cy="19" r="5"/><path d="M28 27l6 6"/></g></svg>
+        <h3>Observable</h3>
+        <p>Prometheus /metrics, /healthz, /readyz and a JSON /admin endpoint.</p>
+      </li>
+      <li class="card">
+        <svg class="icon" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="9" r="3.5"/><circle cx="8.5" cy="29" r="3.5"/><circle cx="31.5" cy="29" r="3.5"/><path d="M16.2 10.6A12 12 0 0 0 8.2 25.3M23.8 10.6a12 12 0 0 1 8 14.7M12 30.6a12 12 0 0 0 16 0"/></g></svg>
+        <h3>Raft replication</h3>
+        <p>Optional 3 or 5 node cluster over mutual TLS. Keeps serving through the loss of a minority.</p>
+      </li>
+      <li class="card">
+        <svg class="icon" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4v17M13.5 14.5 20 21l6.5-6.5"/><rect x="7" y="25" width="26" height="8" rx="2"/><path d="M26 29h3"/></g></svg>
+        <h3>Graceful shutdown</h3>
+        <p>SIGTERM stops accepting, syncs the log and exits 0.</p>
+      </li>
     </ul>
   </div>
 </section>
 
-<section class="wrap" id="docs">
-  <h2>Documentation</h2>
-  <ul class="docs">
-    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">Operations guide</a><span>install, configuration, clusters, backups, upgrades, monitoring</span></li>
-    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/beanstalkd-rs.example.toml">Configuration reference</a><span>every configuration key</span></li>
-    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/DESIGN.md">Design</a><span>architecture and design</span></li>
-    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">Compatibility</a><span>differences from the reference beanstalkd</span></li>
-    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/BENCH.md">Benchmarks</a><span>performance results and method</span></li>
-    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/CHANGELOG.md">Changelog</a><span>changes per release</span></li>
-  </ul>
+<section class="section" id="performance">
+  <div class="container narrow">
+    <header class="section-head">
+      <p class="eyebrow">Performance</p>
+      <h2>Same fsync. 2.2× the throughput.</h2>
+      <p class="sub">Operations per second at 100 connections, beanstalkd against beanstalkd-rs. Higher is better.</p>
+    </header>
+    <figure class="chart">
+      <div class="legend"><span class="sw sw-ref"></span>beanstalkd <span class="sw sw-rs"></span>beanstalkd-rs</div>
+      <table class="bars">
+        <caption class="sr-only">Operations per second at 100 connections</caption>
+        <thead class="sr-only"><tr><th>Workload</th><th>beanstalkd</th><th>beanstalkd-rs</th><th>Ratio</th></tr></thead>
+        <tbody>
+          <tr style="--ref:393;--rs:516"><th scope="row">put-reserve-delete</th><td class="track"><span class="bar-rs"></span><span class="bar-ref"><span>393k</span></span><span class="val-rs">516k</span></td><td class="ratio">1.31×</td></tr>
+          <tr style="--ref:490;--rs:643"><th scope="row">16 pipelined</th><td class="track"><span class="bar-rs"></span><span class="bar-ref"><span>490k</span></span><span class="val-rs">643k</span></td><td class="ratio">1.31×</td></tr>
+          <tr style="--ref:422;--rs:501"><th scope="row">producers and consumers</th><td class="track"><span class="bar-rs"></span><span class="bar-ref"><span>422k</span></span><span class="val-rs">501k</span></td><td class="ratio">1.19×</td></tr>
+          <tr style="--ref:267;--rs:594"><th scope="row">with a binlog</th><td class="track"><span class="bar-rs"></span><span class="bar-ref"><span>267k</span></span><span class="val-rs">594k</span></td><td class="ratio">2.22×</td></tr>
+        </tbody>
+      </table>
+    </figure>
+    <p class="footnote">Linux 7.0 (aarch64) on an Apple M6, both servers with default settings, medians of 5 alternated runs. One connection is latency-bound, where beanstalkd-rs is 4% slower on Linux. Every cell, the method and the raw data: <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/BENCH.md">docs/BENCH.md</a>.</p>
+  </div>
+</section>
+
+<section class="section" id="compare">
+  <div class="container narrow">
+    <header class="section-head">
+      <p class="eyebrow">Compare</p>
+      <h2>beanstalkd-rs and beanstalkd</h2>
+    </header>
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead><tr><th><span class="sr-only">Feature</span></th><th>beanstalkd</th><th>beanstalkd-rs</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Protocol</th><td>the reference</td><td>byte for byte</td></tr>
+          <tr><th scope="row">Built-in TLS</th><td><span aria-label="no">—</span></td><td><svg class="tick" role="img" aria-label="yes"><use href="#check"/></svg></td></tr>
+          <tr><th scope="row">Token and mTLS auth</th><td><span aria-label="no">—</span></td><td><svg class="tick" role="img" aria-label="yes"><use href="#check"/></svg></td></tr>
+          <tr><th scope="row">Raft replication</th><td><span aria-label="no">—</span></td><td><svg class="tick" role="img" aria-label="yes"><use href="#check"/></svg></td></tr>
+          <tr><th scope="row">Prometheus metrics</th><td><span aria-label="no">—</span></td><td><svg class="tick" role="img" aria-label="yes"><use href="#check"/></svg></td></tr>
+          <tr><th scope="row">Graceful SIGTERM</th><td><span aria-label="no">—</span></td><td><svg class="tick" role="img" aria-label="yes"><use href="#check"/></svg></td></tr>
+          <tr><th scope="row">Binlog format</th><td>the original</td><td>a new one, not compatible</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">The few intentional behavior differences, each with the test that covers it: <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">docs/COMPAT.md</a>.</p>
+  </div>
+</section>
+
+<section class="section" id="get-started">
+  <div class="container mid">
+    <header class="section-head center">
+      <p class="eyebrow">Get started</p>
+      <h2>Up in one command.</h2>
+    </header>
+
+    <div class="code-panel" data-tabs>
+      <div class="tabs" role="tablist" aria-label="Install method">
+        <button role="tab" type="button" id="tab-docker" aria-controls="pane-docker" aria-selected="true">Docker</button>
+        <button role="tab" type="button" id="tab-cargo" aria-controls="pane-cargo" aria-selected="false" tabindex="-1">Cargo</button>
+        <button role="tab" type="button" id="tab-archives" aria-controls="pane-archives" aria-selected="false" tabindex="-1">Release archives</button>
+        <button class="copy" type="button" data-copy-active aria-label="Copy the command"><svg><use href="#copy"/></svg></button>
+      </div>
+      <div class="pane" role="tabpanel" id="pane-docker" aria-labelledby="tab-docker">
+<pre><code data-cmd><span class="prompt">$</span> docker run -d --name bstk -p 127.0.0.1:11300:11300 -v bstk-data:/data \
+    shonhen/beanstalkd-rs -l 0.0.0.0 -p 11300 -b /data</code></pre>
+      </div>
+      <div class="pane" role="tabpanel" id="pane-cargo" aria-labelledby="tab-cargo" hidden>
+<pre><code data-cmd><span class="prompt">$</span> cargo install bstkd        <span class="dim"># or: cargo binstall bstkd</span>
+<span class="prompt">$</span> beanstalkd-rs -l 127.0.0.1 -p 11300 -b ./binlog</code></pre>
+      </div>
+      <div class="pane" role="tabpanel" id="pane-archives" aria-labelledby="tab-archives" hidden>
+        <p class="pane-text">Linux x86_64 and aarch64 (glibc or static musl) and macOS aarch64. Each archive holds the binary, a systemd unit, example configurations, the cluster certificate script and the operations guide.</p>
+        <p class="pane-text"><a class="link" href="https://github.com/shaunlee/beanstalkd-rs/releases">Download from the releases page <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+    <p class="panel-note" data-note="pane-docker"><code>linux/amd64</code> and <code>linux/arm64</code>. Also on <code>ghcr.io/shaunlee/beanstalkd-rs</code></p>
+    <p class="panel-note" data-note="pane-cargo" hidden>Rust 1.98 or newer. The binary is called <code>beanstalkd-rs</code></p>
+    <p class="panel-note" data-note="pane-archives" hidden>Installation with systemd, configuration, clusters, backups and upgrades: the <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">operations guide</a></p>
+
+    <div class="pair">
+      <div class="card card-flat">
+        <h3>Migrating from beanstalkd</h3>
+        <p>Point existing clients at it and they work unmodified. The binlog format differs, so drain the old server and switch.</p>
+        <a class="link" href="https://github.com/shaunlee/beanstalkd-rs#migrating-from-beanstalkd">Read the migration guide <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="card card-flat">
+        <h3>When something else fits better</h3>
+        <ul class="dots">
+          <li>Consumer groups or replay: NATS, Kafka, Redis Streams</li>
+          <li>No operations at all: SQS, Cloud Tasks</li>
+          <li>beanstalkd's exact binlog format</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cta">
+      <h2>Run it next to your current beanstalkd today.</h2>
+      <div class="actions center">
+        <a class="btn btn-primary" href="#get-started">Get started</a>
+        <a class="btn btn-secondary" href="https://github.com/shaunlee/beanstalkd-rs">View on GitHub</a>
+      </div>
+    </div>
+  </div>
 </section>
 
 </main>
 
-<footer class="wrap">
-  <p>MIT licensed; beanstalkd itself is also MIT-licensed.
-    <a href="https://github.com/shaunlee/beanstalkd-rs">GitHub</a> ·
-    <a href="https://crates.io/crates/bstkd">crates.io</a> ·
-    <a href="https://docs.rs/bstkd">docs.rs</a> ·
-    <a href="https://hub.docker.com/r/shonhen/beanstalkd-rs">Docker Hub</a></p>
+<footer class="footer">
+  <div class="container mid footer-inner">
+    <div class="footer-brand">
+      <a class="brand" href="./"><svg class="mark" aria-hidden="true"><use href="#mark"/></svg>beanstalkd-rs</a>
+      <p>MIT licensed</p>
+    </div>
+    <nav class="footer-cols" aria-label="Footer">
+      <div><h4>Project</h4><a href="https://github.com/shaunlee/beanstalkd-rs">GitHub</a><a href="https://github.com/shaunlee/beanstalkd-rs/releases">Releases</a><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/CHANGELOG.md">Changelog</a></div>
+      <div><h4>Docs</h4><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">Operations</a><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">Compatibility</a><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/BENCH.md">Benchmarks</a></div>
+      <div><h4>Install</h4><a href="https://crates.io/crates/bstkd">crates.io</a><a href="https://hub.docker.com/r/shonhen/beanstalkd-rs">Docker Hub</a><a href="https://docs.rs/bstkd">docs.rs</a></div>
+    </nav>
+  </div>
 </footer>
 
+<script>
+(() => {
+  const copy = async (btn, text) => {
+    try { await navigator.clipboard.writeText(text); } catch { return; }
+    btn.classList.add('done');
+    setTimeout(() => btn.classList.remove('done'), 1200);
+  };
+  // The leading "$ " is presentation only; copy the commands themselves.
+  const commands = el => el.textContent.split('\n')
+    .map(l => l.replace(/^\$ /, '').replace(/\s+#.*$/, '')).join('\n').trim();
+
+  document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', () =>
+    copy(btn, document.getElementById(btn.dataset.copy).textContent)));
+
+  const panel = document.querySelector('[data-tabs]');
+  const tabs = [...panel.querySelectorAll('[role=tab]')];
+  const copyBtn = panel.querySelector('[data-copy-active]');
+  const select = tab => {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      document.querySelector(`[data-note="${t.getAttribute('aria-controls')}"]`).hidden = !on;
+    });
+    copyBtn.hidden = !document.getElementById(tab.getAttribute('aria-controls')).querySelector('[data-cmd]');
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', e => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); select(n); }
+    });
+  });
+  copyBtn.addEventListener('click', () => {
+    const pane = panel.querySelector('[role=tabpanel]:not([hidden]) [data-cmd]');
+    if (pane) copy(copyBtn, commands(pane));
+  });
+})();
+</script>
 </body>
 </html>
