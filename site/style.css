@@ -76,8 +76,7 @@ button { font: inherit; color: inherit; }
 /* Navigation */
 .nav { position: relative; z-index: 2; }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 78px; }
-.brand { display: inline-flex; align-items: center; gap: 12px; color: var(--fg); font-weight: 600; font-size: 23px; letter-spacing: -0.01em; }
-.mark { width: 32px; height: 32px; color: var(--accent); flex: none; }
+.brand { display: inline-flex; align-items: center; color: var(--fg); font-weight: 600; font-size: 23px; letter-spacing: -0.01em; }
 .nav nav { display: flex; align-items: center; gap: 34px; }
 .nav nav a:not(.btn) { color: var(--muted); font-size: 17px; transition: color .15s; }
 .nav nav a:not(.btn):hover { color: var(--fg); }
@@ -247,8 +246,7 @@ button { font: inherit; color: inherit; }
 /* Footer */
 .footer { margin-top: 18px; border-top: 1px solid var(--line); padding: 26px 0 60px; }
 .footer-inner { display: flex; justify-content: space-between; gap: 40px; }
-.footer .brand { font-size: 18px; gap: 10px; }
-.footer .mark { width: 26px; height: 26px; }
+.footer .brand { font-size: 18px; }
 .footer-brand p { color: var(--muted); margin-top: 12px; font-size: 16px; }
 .footer-cols { display: grid; grid-template-columns: 145px 161px max-content; }
 .footer-cols div { display: flex; flex-direction: column; line-height: 1.45; }
