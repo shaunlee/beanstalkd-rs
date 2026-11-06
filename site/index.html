@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>beanstalkd-rs: a drop-in replacement for beanstalkd, in Rust</title>
+<meta name="description" content="A drop-in replacement for beanstalkd, the simple work queue, written in Rust. The same protocol byte for byte, 1.2–1.4× the throughput, 2.2× with a binlog, TLS, Prometheus metrics and optional Raft replication.">
+<link rel="canonical" href="https://shaunlee.github.io/beanstalkd-rs/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="beanstalkd-rs">
+<meta property="og:description" content="A byte-for-byte replacement for beanstalkd, in Rust.">
+<meta property="og:url" content="https://shaunlee.github.io/beanstalkd-rs/">
+<meta property="og:image" content="https://shaunlee.github.io/beanstalkd-rs/images/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top wrap">
+  <a class="brand" href="./"><span class="bar"></span>beanstalkd-rs</a>
+  <nav>
+    <a href="#try">Try it</a>
+    <a href="#performance">Performance</a>
+    <a href="#docs">Docs</a>
+    <a href="https://github.com/shaunlee/beanstalkd-rs">GitHub</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="hero wrap">
+  <p class="eyebrow">MIT · no unsafe code · v0.5.2</p>
+  <h1>beanstalkd-rs</h1>
+  <p class="lede">A drop-in replacement for
+    <a href="https://github.com/beanstalkd/beanstalkd">beanstalkd</a>, the simple
+    work queue, written in Rust. The protocol is the reference's, byte for byte,
+    so existing clients work unmodified.</p>
+
+  <div class="install">
+    <pre><code><span class="p">$</span> cargo install bstkd</code></pre>
+    <a class="button" href="https://github.com/shaunlee/beanstalkd-rs">View on GitHub</a>
+  </div>
+
+  <dl class="stats">
+    <div><dt class="accent">2.2×</dt><dd>throughput with a binlog and fsync</dd></div>
+    <div><dt>1.2–1.4×</dt><dd>throughput at 10–100 connections</dd></div>
+    <div><dt>3 or 5</dt><dd>nodes, Raft-replicated (optional)</dd></div>
+  </dl>
+</section>
+
+<section class="wrap">
+  <h2>What you get for switching</h2>
+  <ul class="features">
+    <li><h3>Faster, on less CPU</h3>
+      <p>1.2–1.4× the throughput at 10–100 connections and 2.2× with a binlog
+      and fsync, with 10–24% less CPU per operation.</p></li>
+    <li><h3>Production features built in</h3>
+      <p>TLS, mutual TLS and token authentication per listener, Prometheus
+      <code>/metrics</code>, <code>/healthz</code>, <code>/readyz</code>, a TOML
+      configuration file and graceful shutdown, with no proxy in front.</p></li>
+    <li><h3>Optional Raft replication</h3>
+      <p>3 or 5 nodes over mutual TLS. Clients connect to any node, a minority
+      can be lost, and nodes can be added, removed or moved while the cluster
+      serves.</p></li>
+    <li><h3>Checked against the reference</h3>
+      <p><code>unsafe</code> forbidden at the workspace level, 222 differential
+      test cases against the C reference, and the Python, Go and PHP
+      (Pheanstalk, the client behind Laravel's queue driver) clients compared
+      transcript-to-transcript against it.</p></li>
+  </ul>
+  <p class="note">One binary, no runtime dependencies, MIT.</p>
+</section>
+
+<section class="wrap" id="try">
+  <h2>Try it</h2>
+  <p>Docker (linux/amd64 and linux/arm64; also
+    <code>ghcr.io/shaunlee/beanstalkd-rs</code>):</p>
+  <pre><code>docker run -d --name bstk -p 127.0.0.1:11300:11300 -v bstk-data:/data \
+  shonhen/beanstalkd-rs -l 0.0.0.0 -p 11300 -b /data</code></pre>
+  <p>Or from crates.io (Rust 1.98 or newer; the binary is called
+    <code>beanstalkd-rs</code>):</p>
+  <pre><code>cargo install bstkd        # or: cargo binstall bstkd
+beanstalkd-rs -l 127.0.0.1 -p 11300 -b ./binlog</code></pre>
+  <p>Release archives for Linux x86_64 and aarch64 (glibc or static musl) and
+    macOS aarch64 are on the
+    <a href="https://github.com/shaunlee/beanstalkd-rs/releases">releases page</a>.
+    Each holds the binary, a systemd unit, example configurations, the cluster
+    certificate script and the
+    <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">operations guide</a>.</p>
+</section>
+
+<section class="wrap" id="performance">
+  <h2>Performance</h2>
+  <p>Operations per second, beanstalkd-rs against beanstalkd (<code>25085c5</code>,
+    built with <code>-O2</code>), both with default settings, on Linux 7.0
+    (aarch64) in an OrbStack VM on an Apple M6: servers on 6 cores, the load
+    generator on the other 6, loopback, 5 alternated runs per cell, medians.
+    16-byte job bodies unless noted.</p>
+  <figure class="chart">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="images/perf-dark.svg">
+      <img src="images/perf-light.svg" width="820" height="420"
+        alt="Operations per second, beanstalkd against beanstalkd-rs, for the workloads in the table below">
+    </picture>
+  </figure>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Workload</th><th class="n">beanstalkd</th><th class="n">beanstalkd-rs</th><th class="n"></th></tr></thead>
+    <tbody>
+      <tr><td>put-reserve-delete, 1 connection</td><td class="n">56,176</td><td class="n">53,943</td><td class="n">0.96×</td></tr>
+      <tr><td>put-reserve-delete, 10 connections</td><td class="n">339,283</td><td class="n">468,310</td><td class="n"><b>1.38×</b></td></tr>
+      <tr><td>put-reserve-delete, 100 connections</td><td class="n">392,713</td><td class="n">516,336</td><td class="n"><b>1.31×</b></td></tr>
+      <tr><td>put-reserve-delete, 100 connections, 4 KiB bodies</td><td class="n">362,247</td><td class="n">463,416</td><td class="n"><b>1.28×</b></td></tr>
+      <tr><td>put-reserve-delete, 100 connections, 16 pipelined</td><td class="n">490,247</td><td class="n">643,204</td><td class="n"><b>1.31×</b></td></tr>
+      <tr><td>producers and consumers, 100 connections</td><td class="n">422,349</td><td class="n">500,891</td><td class="n"><b>1.19×</b></td></tr>
+      <tr><td>with a binlog (<code>-b</code>, default fsync), 100 connections</td><td class="n">267,391</td><td class="n">594,148</td><td class="n"><b>2.22×</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>One connection is bound by round-trip latency, where beanstalkd-rs is 4%
+    slower on Linux and equal on macOS. Memory per small job is 249 against 219
+    bytes (1.13×), equal for 4 KiB jobs. Every cell, the macOS run, the method and
+    the raw data:
+    <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/BENCH.md">docs/BENCH.md</a>.</p>
+</section>
+
+<section class="wrap">
+  <h2>beanstalkd-rs and beanstalkd</h2>
+  <div class="scroll">
+  <table class="compare">
+    <thead><tr><th></th><th>beanstalkd</th><th>beanstalkd-rs</th></tr></thead>
+    <tbody>
+      <tr><th>Protocol</th><td>the reference</td><td>every command, reply and edge case, checked against the reference by differential tests and real Python, Go and PHP clients</td></tr>
+      <tr><th>Command line</th><td><code>-l -p -z -b -f -F -s -u -V -v</code></td><td>the same, except <code>-u</code> (leave the user switch to the service manager)</td></tr>
+      <tr><th>Persistence</th><td>binlog</td><td>write-ahead log with the same fsync policies (<code>-b</code>, <code>-f</code>, <code>-F</code>); on a disk error it stops instead of carrying on without a log</td></tr>
+      <tr><th>Replication and failover</th><td>—</td><td>Raft cluster of 3 or 5 nodes over mutual TLS; keeps serving through the loss of a minority</td></tr>
+      <tr><th>TLS</th><td>— (needs a proxy such as stunnel)</td><td>built in: several listeners, each plaintext or TLS</td></tr>
+      <tr><th>Authentication</th><td>—</td><td>mutual TLS or a token per listener</td></tr>
+      <tr><th>Monitoring</th><td><code>stats</code> commands</td><td>the same, plus <code>/healthz</code>, <code>/readyz</code>, Prometheus <code>/metrics</code> and JSON <code>/admin</code></td></tr>
+      <tr><th>Configuration</th><td>command line</td><td>command line or a TOML file</td></tr>
+      <tr><th>SIGTERM</th><td>killed</td><td>graceful: stops accepting, syncs the log, exits 0</td></tr>
+      <tr><th>Memory safety</th><td>C</td><td>Rust, no <code>unsafe</code> code</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="wrap two">
+  <div>
+    <h2>Migrating from beanstalkd</h2>
+    <p>Point an existing client at beanstalkd-rs and it works, including the
+      reference's parser quirks.</p>
+    <p><b>The binlog directory is not compatible.</b> beanstalkd-rs uses its own
+      on-disk format, so a migration drains the old server and switches rather
+      than swapping the binary under a full queue. The
+      <a href="https://github.com/shaunlee/beanstalkd-rs#migrating-from-beanstalkd">README</a>
+      has the steps, and
+      <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">docs/COMPAT.md</a>
+      lists every intentional behavior difference with the test that covers it.</p>
+  </div>
+  <div>
+    <h2>When something else fits better</h2>
+    <ul>
+      <li>Consumer groups, streams, replay or fan-out to independent consumers:
+        NATS, Kafka or Redis Streams model that; tubes do not.</li>
+      <li>A managed service and no operations: SQS, Cloud Tasks or a hosted
+        RabbitMQ.</li>
+      <li>Beanstalkd's exact on-disk binlog format: this project deliberately
+        does not keep it.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="wrap" id="docs">
+  <h2>Documentation</h2>
+  <ul class="docs">
+    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">Operations guide</a><span>install, configuration, clusters, backups, upgrades, monitoring</span></li>
+    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/beanstalkd-rs.example.toml">Configuration reference</a><span>every configuration key</span></li>
+    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/DESIGN.md">Design</a><span>architecture and design</span></li>
+    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">Compatibility</a><span>differences from the reference beanstalkd</span></li>
+    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/BENCH.md">Benchmarks</a><span>performance results and method</span></li>
+    <li><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/CHANGELOG.md">Changelog</a><span>changes per release</span></li>
+  </ul>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>MIT licensed; beanstalkd itself is also MIT-licensed.
+    <a href="https://github.com/shaunlee/beanstalkd-rs">GitHub</a> ·
+    <a href="https://crates.io/crates/bstkd">crates.io</a> ·
+    <a href="https://docs.rs/bstkd">docs.rs</a> ·
+    <a href="https://hub.docker.com/r/shonhen/beanstalkd-rs">Docker Hub</a></p>
+</footer>
+
+</body>
+</html>

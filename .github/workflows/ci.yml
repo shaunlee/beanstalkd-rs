@@ -1,18 +1,22 @@
 name: CI
 
-# Pushes and pull requests that only touch documentation, images or
-# recorded benchmark results build and test nothing new.
+# Pushes and pull requests that only touch documentation, images, the
+# project site or recorded benchmark results build and test nothing new.
 on:
   push:
     paths-ignore:
       - "**/*.md"
       - "docs/images/**"
+      - "site/**"
+      - ".github/workflows/pages.yml"
       - "bench/results/**"
       - "LICENSE"
   pull_request:
     paths-ignore:
       - "**/*.md"
       - "docs/images/**"
+      - "site/**"
+      - ".github/workflows/pages.yml"
       - "bench/results/**"
       - "LICENSE"
 
