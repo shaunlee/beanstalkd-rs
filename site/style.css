@@ -21,7 +21,9 @@
   --text: #d9dde6;
   --muted: #9fa5b4;
   --accent: #ef6031;
-  --accent-hover: #ff7246;
+  /* Button fill: darker than --accent so white labels reach 4.5:1. */
+  --accent-fill: #cc4416;
+  --accent-fill-hover: #b83c12;
   --accent-text: #ff7a4d;
   --ref-bar: #5b6273;
   --glow: rgba(239, 96, 49, 0.32);
@@ -66,8 +68,8 @@ button { font: inherit; color: inherit; }
   transition: background-color .15s, border-color .15s;
 }
 .btn-sm { height: 43px; padding: 0 17px; }
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: var(--accent-hover); }
+.btn-primary { background: var(--accent-fill); color: #fff; }
+.btn-primary:hover { background: var(--accent-fill-hover); }
 .btn-secondary { background: #262e3b; color: var(--fg); border: 1px solid #3a4352; }
 .btn-secondary:hover { background: #2f3847; }
 
