@@ -11,6 +11,14 @@ Release tags are `v<version>` and match the workspace version in
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-11-09
+
+Container image changes: no protocol, binlog, cluster or command line
+changes, so every 0.5.x release is interchangeable and a rolling upgrade
+between them is a plain restart. Deployments that relied on the image's
+`HEALTHCHECK` or on running a shell in the container need the changes
+below.
+
 ### Changed
 
 - **The container image is a static musl binary `FROM scratch`**: about
@@ -174,7 +182,8 @@ clients can use unmodified.
   ([packaging/](https://github.com/shaunlee/beanstalkd-rs/tree/main/packaging))
   and `scripts/mkcluster-certs.sh` for a cluster CA and node certificates.
 
-[Unreleased]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/shaunlee/beanstalkd-rs/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/shaunlee/beanstalkd-rs/releases/tag/v0.5.0

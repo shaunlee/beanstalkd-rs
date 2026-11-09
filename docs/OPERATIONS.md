@@ -57,8 +57,8 @@ Verify the download before unpacking. Linux:
 
 ```sh
 sha256sum -c --ignore-missing SHA256SUMS
-tar -xzf beanstalkd-rs-0.5.2-aarch64-unknown-linux-gnu.tar.gz
-./beanstalkd-rs-0.5.2-aarch64-unknown-linux-gnu/beanstalkd-rs --version
+tar -xzf beanstalkd-rs-0.5.3-aarch64-unknown-linux-gnu.tar.gz
+./beanstalkd-rs-0.5.3-aarch64-unknown-linux-gnu/beanstalkd-rs --version
 ```
 
 macOS (`shasum` instead of `sha256sum`; a binary downloaded with a browser
@@ -66,8 +66,8 @@ is quarantined by Gatekeeper because it is not signed):
 
 ```sh
 shasum -a 256 -c --ignore-missing SHA256SUMS
-tar -xzf beanstalkd-rs-0.5.2-aarch64-apple-darwin.tar.gz
-xattr -d com.apple.quarantine beanstalkd-rs-0.5.2-aarch64-apple-darwin/beanstalkd-rs
+tar -xzf beanstalkd-rs-0.5.3-aarch64-apple-darwin.tar.gz
+xattr -d com.apple.quarantine beanstalkd-rs-0.5.3-aarch64-apple-darwin/beanstalkd-rs
 ```
 
 `--ignore-missing` lets you download only the archive you need.
@@ -92,8 +92,8 @@ The image has no `HEALTHCHECK`, since there is no shell to run one; see
 the end of this section.
 
 ```sh
-docker pull shonhen/beanstalkd-rs:0.5.2
-docker tag shonhen/beanstalkd-rs:0.5.2 beanstalkd-rs   # the examples use this name
+docker pull shonhen/beanstalkd-rs:0.5.3
+docker tag shonhen/beanstalkd-rs:0.5.3 beanstalkd-rs   # the examples use this name
 docker volume create bstk-data
 docker run -d --init --name bstk -p 127.0.0.1:11300:11300 -v bstk-data:/data \
     beanstalkd-rs -l 0.0.0.0 -p 11300 -b /data -V
@@ -158,7 +158,7 @@ call filter) that runs `beanstalkd-rs --config
 `cluster.data_dir` there. From an unpacked release archive, as root:
 
 ```sh
-cd beanstalkd-rs-0.5.2-aarch64-unknown-linux-gnu
+cd beanstalkd-rs-0.5.3-aarch64-unknown-linux-gnu
 useradd --system --user-group --home-dir /var/lib/beanstalkd-rs \
     --shell /usr/sbin/nologin beanstalkd
 install -m 0755 beanstalkd-rs /usr/local/bin/beanstalkd-rs
@@ -347,7 +347,7 @@ the target `beanstalkd_rs::lifecycle` (the `target` key in `json`), so
 exited cleanly:
 
 ```text
-INFO beanstalkd_rs::lifecycle: beanstalkd-rs starting version="0.5.2" pid=1
+INFO beanstalkd_rs::lifecycle: beanstalkd-rs starting version="0.5.3" pid=1
 INFO beanstalkd_rs::lifecycle: ready: accepting connections listeners=0.0.0.0:11300 storage=binlog /data startup_ms=4
 INFO beanstalkd_rs::lifecycle: SIGTERM received: shutting down
 INFO beanstalkd_rs::lifecycle: shutdown complete
@@ -1412,10 +1412,11 @@ it needs a full cluster restart: stop every node, replace every binary,
 start every node (section 5.7; the data directories are kept). Standalone
 servers upgrade as in 7.2.
 
-0.5.1 and 0.5.2 change only packaging, documentation, dependency versions
-and, in 0.5.2, the startup and shutdown log lines (section 2.4): no
-protocol, binlog or cluster change, so switching between 0.5.0, 0.5.1 and
-0.5.2 is a plain restart (a rolling one in a cluster). No upgrade between
+0.5.1 to 0.5.3 change only packaging, documentation, dependency versions,
+the startup and shutdown log lines (0.5.2, section 2.4) and the container
+image (0.5.3, section 1.2): no protocol, binlog or cluster change, so
+switching between any two 0.5.x releases is a plain restart (a rolling one
+in a cluster). No upgrade between
 two releases with different behavior has been tested yet. What was tested
 is replacing the binary with a build of the same version, both by a full
 stop and start and by a rolling restart, which exercises the procedures
