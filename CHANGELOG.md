@@ -11,6 +11,20 @@ Release tags are `v<version>` and match the workspace version in
 
 ## [Unreleased]
 
+### Changed
+
+- **The container image is a static musl binary `FROM scratch`**: about
+  6 MB compressed instead of 35 MB (Debian 13 slim), with throughput and
+  latency within 2% of it on linux/amd64 and linux/arm64. musl's allocator
+  returns freed memory to the kernel, so after a large backlog is drained
+  the container's memory falls back to a few MB; with glibc it stayed at
+  the peak. It still runs as uid 10001 with data in `/data`, so existing
+  volumes work unchanged.
+- **The image has no `HEALTHCHECK` and no shell**: probe `/healthz` and
+  `/readyz` on the `[http]` listener from the orchestrator instead (see
+  `docs/OPERATIONS.md` section 1.2). `docker exec` into the container no
+  longer finds a shell or other tools.
+
 ## [0.5.2] - 2026-10-29
 
 Logging, packaging and test changes: no protocol, binlog, cluster or

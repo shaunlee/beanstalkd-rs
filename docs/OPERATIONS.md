@@ -81,12 +81,15 @@ and on the GitHub Container Registry as
 (the same image; tags `<version>`, `<major>.<minor>` and `latest`;
 linux/amd64 and linux/arm64). The `Image` workflow builds it on every
 release tag, smoke-tests each architecture and pushes it. It is built
-from the repository's `Dockerfile` (multi-stage,
-Debian 13 runtime); `docker build -t beanstalkd-rs .` builds the same
-image locally. It runs as
-the non-root user `beanstalkd` (uid 10001), keeps data in the `/data`
-volume, exposes 11300 and has a `HEALTHCHECK` that sends `stats` to
-`127.0.0.1:11300`.
+from the repository's `Dockerfile`: a static musl binary in a `FROM
+scratch` image of about 6 MB compressed, with no shell, libc or other
+files. `docker build -t beanstalkd-rs .` builds the same image locally.
+It runs as the non-root uid 10001 (there is no `/etc/passwd`, so no user
+name), keeps data in the `/data` volume and exposes 11300. musl's
+allocator returns freed memory to the kernel, so after a backlog is
+drained the container's memory falls back instead of staying at its peak.
+The image has no `HEALTHCHECK`, since there is no shell to run one; see
+the end of this section.
 
 ```sh
 docker pull shonhen/beanstalkd-rs:0.5.2
@@ -94,7 +97,6 @@ docker tag shonhen/beanstalkd-rs:0.5.2 beanstalkd-rs   # the examples use this n
 docker volume create bstk-data
 docker run -d --init --name bstk -p 127.0.0.1:11300:11300 -v bstk-data:/data \
     beanstalkd-rs -l 0.0.0.0 -p 11300 -b /data -V
-docker inspect -f '{{.State.Health.Status}}' bstk     # healthy after ~10 s
 docker logs bstk                                      # "ready: accepting connections" (section 2.4)
 docker stop bstk                                      # SIGTERM: graceful, exit status 0
 ```
@@ -135,10 +137,15 @@ level = "info"
 format = "json"
 ```
 
-If the server does not listen on plaintext port 11300 inside the
-container, the built-in healthcheck fails: override it (`--health-cmd`,
-`--no-healthcheck`) or probe `/healthz` / `/readyz` from the orchestrator.
-`scripts/docker-smoke.sh IMAGE` is the automated version of these checks.
+For health checks, enable the `[http]` listener (as above) and probe
+`/healthz` (liveness) and `/readyz` (readiness; section 8.1) from the
+orchestrator, for example with Kubernetes `httpGet` probes. A bare TCP
+connect is not a health check: the kernel's accept backlog completes it
+even when the server is hung. Tools that run commands inside the
+container (`docker exec`, a `HEALTHCHECK` added in a derived image) find
+no shell; a derived image that needs one must copy in its own static
+binaries. `scripts/docker-smoke.sh IMAGE` is the automated version of the
+checks in this section.
 
 ### 1.3 systemd (Linux)
 
@@ -1323,9 +1330,14 @@ issued again, so clients that remember job ids from that period may
 refer to different jobs. Backups contain job bodies: store them with the
 same care as the data.
 
-Container: stop the container, then archive the volume, for example with
-the image itself (`docker run --rm -v bstk-data:/data ...`) or from the
-host's volume directory.
+Container: stop the container, then archive the volume from the host's
+volume directory or with any image that has `tar` (the server image has
+none), keeping the numeric owner:
+
+```sh
+docker run --rm -v bstk-data:/data:ro -v "$PWD":/backup debian:13-slim \
+    tar -C /data --numeric-owner -czf /backup/bstk-data.tar.gz .
+```
 
 ### 6.2 Cluster
 

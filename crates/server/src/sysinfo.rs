@@ -108,12 +108,14 @@ fn read_rusage() -> ((u64, u64), (u64, u64)) {
     }
 }
 
-fn tv_sec_as_u64(v: nix::libc::time_t) -> u64 {
-    u64::try_from(v).unwrap_or(0)
+// Generic rather than taking `libc::time_t` / `suseconds_t`: the libc crate
+// deprecates both on musl (they become 64-bit in a future release).
+fn tv_sec_as_u64(v: impl TryInto<u64>) -> u64 {
+    v.try_into().unwrap_or(0)
 }
 
-fn tv_usec_as_u64(v: nix::libc::suseconds_t) -> u64 {
-    u64::try_from(v).unwrap_or(0)
+fn tv_usec_as_u64(v: impl TryInto<u64>) -> u64 {
+    v.try_into().unwrap_or(0)
 }
 
 /// Best-effort: raises the soft `RLIMIT_NOFILE` limit to the hard limit, so

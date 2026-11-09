@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Smoke test for the container image (Dockerfile): the default command,
 # then a binlog on a named volume that must survive a container restart,
-# with a graceful stop (exit status 0) in between.
+# with a graceful stop (exit status 0) in between. The image is FROM
+# scratch, so everything is checked from outside: there is no shell or
+# `id` to run inside it.
 #
 # Usage: scripts/docker-smoke.sh IMAGE
 # Environment: SMOKE_NAME (prefix for the containers and the volume it
@@ -24,20 +26,15 @@ cleanup() {
 trap cleanup EXIT
 cleanup
 
-echo "== $IMAGE: version $VERSION, user $(docker run --rm --entrypoint id "$IMAGE" -u)"
-[ "$(docker run --rm --entrypoint id "$IMAGE" -u)" != 0 ] || { echo "image runs as root" >&2; exit 1; }
+USER_ID="$(docker image inspect -f '{{.Config.User}}' "$IMAGE")"
+echo "== $IMAGE: version $VERSION, user ${USER_ID:-<unset>}"
+case "${USER_ID%%:*}" in
+  "" | 0 | root) echo "image runs as root" >&2; exit 1 ;;
+esac
 
 echo "== default command (in memory)"
 docker run -d --name "$NAME-mem" -p "127.0.0.1:$PORT:11300" "$IMAGE" >/dev/null
 "${SMOKE[@]}" --version "$VERSION"
-# The HEALTHCHECK must turn healthy with the default command.
-for _ in $(seq 1 30); do
-  health="$(docker inspect -f '{{.State.Health.Status}}' "$NAME-mem")"
-  [ "$health" = healthy ] && break
-  sleep 1
-done
-echo "health: $health"
-[ "$health" = healthy ]
 docker stop -t 10 "$NAME-mem" >/dev/null
 [ "$(docker inspect -f '{{.State.ExitCode}}' "$NAME-mem")" = 0 ]
 docker rm "$NAME-mem" >/dev/null
