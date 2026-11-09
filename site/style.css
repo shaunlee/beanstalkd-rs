@@ -212,7 +212,7 @@ button { font: inherit; color: inherit; }
 .faq details + details { border-top: 1px solid var(--line); }
 .faq summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 17px 22px; cursor: pointer; list-style: none; border-radius: var(--radius); }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: "+"; flex: none; color: var(--accent); font-size: 24px; font-weight: 400; line-height: 1; transition: transform .2s ease; }
+.faq summary::after { content: "+" / ""; flex: none; color: var(--accent); font-size: 24px; font-weight: 400; line-height: 1; transition: transform .2s ease; }
 .faq details[open] summary::after { transform: rotate(45deg); }
 .faq summary:hover h3 { color: var(--accent-text); }
 .faq h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
