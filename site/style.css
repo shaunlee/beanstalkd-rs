@@ -94,8 +94,9 @@ button { font: inherit; color: inherit; }
           mask-image: radial-gradient(ellipse 80% 75% at 70% 35%, #000 25%, transparent 75%);
 }
 .hero-inner { position: relative; display: grid; grid-template-columns: 1fr 499px; gap: 60px; align-items: center; }
-.hero-eyebrow { color: var(--muted); font-weight: 600; font-size: 18.5px; }
-.hero h1 { font-size: 51px; line-height: 1.08; font-weight: 700; letter-spacing: -0.025em; margin: 11px 0 24px; }
+/* The eyebrow sits inside the h1 so the heading carries "beanstalkd"; it keeps the look of a separate line. */
+.hero-eyebrow { display: block; color: var(--muted); font-weight: 600; font-size: 18.5px; line-height: 1.5; letter-spacing: normal; margin-bottom: 11px; }
+.hero h1 { font-size: 51px; line-height: 1.08; font-weight: 700; letter-spacing: -0.025em; margin: 0 0 24px; }
 .hero-lede { color: var(--muted); font-size: 19px; line-height: 1.5; max-width: 532px; }
 
 .chip {
@@ -250,7 +251,7 @@ button { font: inherit; color: inherit; }
 .footer-brand p { color: var(--muted); margin-top: 12px; font-size: 16px; }
 .footer-cols { display: grid; grid-template-columns: 145px 161px max-content; }
 .footer-cols div { display: flex; flex-direction: column; line-height: 1.45; }
-.footer-cols h4 { color: var(--muted); font-size: 16px; font-weight: 500; }
+.footer-cols h2 { color: var(--muted); font-size: 16px; font-weight: 500; }
 .footer-cols a { color: var(--text); font-size: 16px; }
 .footer-cols a:hover { color: var(--fg); }
 

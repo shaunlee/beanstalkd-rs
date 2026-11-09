@@ -3,22 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>beanstalkd-rs: the same work queue, rebuilt in Rust</title>
-<meta name="description" content="A drop-in replacement for beanstalkd, written in Rust. Byte-for-byte protocol compatible, 1.2–1.4× the throughput, 2.2× with a binlog, with TLS, Prometheus metrics and optional Raft replication built in.">
+<title>beanstalkd-rs: a drop-in beanstalkd replacement in Rust</title>
+<meta name="description" content="A drop-in replacement for the beanstalkd work queue, in Rust: byte-for-byte protocol compatible, up to 2.2× faster, with TLS, metrics and Raft replication.">
 <link rel="canonical" href="https://shaunlee.github.io/beanstalkd-rs/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="beanstalkd-rs: the same work queue, rebuilt in Rust">
-<meta property="og:description" content="A byte-for-byte replacement for beanstalkd, in Rust.">
+<meta property="og:site_name" content="beanstalkd-rs">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="beanstalkd-rs: a drop-in beanstalkd replacement in Rust">
+<meta property="og:description" content="A drop-in replacement for the beanstalkd work queue, in Rust: byte-for-byte protocol compatible, up to 2.2× faster, with TLS, metrics and Raft replication.">
 <meta property="og:url" content="https://shaunlee.github.io/beanstalkd-rs/">
 <meta property="og:image" content="https://shaunlee.github.io/beanstalkd-rs/images/social-preview.png">
+<meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="beanstalkd-rs: a drop-in beanstalkd replacement in Rust">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="beanstalkd-rs: a drop-in beanstalkd replacement in Rust">
+<meta name="twitter:description" content="Byte-for-byte protocol compatible with beanstalkd, up to 2.2× faster, with TLS, metrics and Raft replication.">
+<meta name="twitter:image" content="https://shaunlee.github.io/beanstalkd-rs/images/social-preview.png">
+<meta name="twitter:image:alt" content="beanstalkd-rs: a drop-in beanstalkd replacement in Rust">
 <meta name="theme-color" content="#0f1523">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/jetbrains-mono-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "beanstalkd-rs",
+  "alternateName": "bstkd",
+  "description": "A drop-in replacement for the beanstalkd work queue, written in Rust. Byte-for-byte protocol compatible, with built-in TLS, token and mutual TLS authentication, Prometheus metrics and optional Raft replication.",
+  "url": "https://shaunlee.github.io/beanstalkd-rs/",
+  "image": "https://shaunlee.github.io/beanstalkd-rs/images/social-preview.png",
+  "applicationCategory": "DeveloperApplication",
+  "applicationSubCategory": "Work queue",
+  "operatingSystem": "Linux, macOS",
+  "license": "https://opensource.org/licenses/MIT",
+  "downloadUrl": "https://github.com/shaunlee/beanstalkd-rs/releases",
+  "installUrl": "https://crates.io/crates/bstkd",
+  "author": { "@type": "Person", "name": "Shaun", "url": "https://github.com/shaunlee" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "sameAs": [
+    "https://github.com/shaunlee/beanstalkd-rs",
+    "https://crates.io/crates/bstkd",
+    "https://hub.docker.com/r/shonhen/beanstalkd-rs"
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -51,8 +84,7 @@
   <div class="hero-grid" aria-hidden="true"></div>
   <div class="container hero-inner">
     <div class="hero-copy">
-      <p class="hero-eyebrow">Drop-in replacement for beanstalkd</p>
-      <h1>The same work queue.<br>Rebuilt in Rust.</h1>
+      <h1><span class="hero-eyebrow">Drop-in replacement for beanstalkd</span> The same work queue.<br>Rebuilt in Rust.</h1>
       <p class="hero-lede">Byte-for-byte protocol compatible, so existing clients work unmodified. Faster, with TLS, metrics and optional Raft replication built in.</p>
       <div class="chip">
         <code><span class="prompt">$</span> <span id="cmd-install">cargo install bstkd</span></code>
@@ -238,9 +270,9 @@
       <p>MIT licensed</p>
     </div>
     <nav class="footer-cols" aria-label="Footer">
-      <div><h4>Project</h4><a href="https://github.com/shaunlee/beanstalkd-rs">GitHub</a><a href="https://github.com/shaunlee/beanstalkd-rs/releases">Releases</a><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/CHANGELOG.md">Changelog</a></div>
-      <div><h4>Docs</h4><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">Operations</a><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">Compatibility</a><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/BENCH.md">Benchmarks</a></div>
-      <div><h4>Install</h4><a href="https://crates.io/crates/bstkd">crates.io</a><a href="https://hub.docker.com/r/shonhen/beanstalkd-rs">Docker Hub</a><a href="https://docs.rs/bstkd">docs.rs</a></div>
+      <div><h2>Project</h2><a href="https://github.com/shaunlee/beanstalkd-rs">GitHub</a><a href="https://github.com/shaunlee/beanstalkd-rs/releases">Releases</a><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/CHANGELOG.md">Changelog</a></div>
+      <div><h2>Docs</h2><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">Operations</a><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">Compatibility</a><a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/BENCH.md">Benchmarks</a></div>
+      <div><h2>Install</h2><a href="https://crates.io/crates/bstkd">crates.io</a><a href="https://hub.docker.com/r/shonhen/beanstalkd-rs">Docker Hub</a><a href="https://docs.rs/bstkd">docs.rs</a></div>
     </nav>
   </div>
 </footer>
