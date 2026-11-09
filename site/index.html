@@ -39,6 +39,14 @@
   "image": "https://shaunlee.github.io/beanstalkd-rs/images/social-preview.png",
   "applicationCategory": "DeveloperApplication",
   "applicationSubCategory": "Work queue",
+  "featureList": [
+    "beanstalkd protocol compatible byte for byte",
+    "TLS, mutual TLS and token authentication per listener",
+    "Prometheus metrics, health and readiness endpoints",
+    "Optional Raft replication across 3 or 5 nodes",
+    "Write-ahead log with beanstalkd's fsync policies",
+    "Graceful shutdown on SIGTERM"
+  ],
   "operatingSystem": "Linux, macOS",
   "license": "https://opensource.org/licenses/MIT",
   "downloadUrl": "https://github.com/shaunlee/beanstalkd-rs/releases",
@@ -201,6 +209,41 @@
       </table>
     </div>
     <p class="footnote">The few intentional behavior differences, each with the test that covers it: <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">docs/COMPAT.md</a>.</p>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="container narrow">
+    <header class="section-head">
+      <p class="eyebrow">FAQ</p>
+      <h2>Before you switch</h2>
+    </header>
+    <div class="faq">
+      <details>
+        <summary><h3>Do existing beanstalkd clients work with beanstalkd-rs?</h3></summary>
+        <p>Yes, unmodified. beanstalkd-rs speaks the beanstalkd protocol byte for byte, including the reference's parser quirks. The Python greenstalk, Go beanstalk and PHP Pheanstalk clients run the same script against both servers, and the transcripts must be identical.</p>
+      </details>
+      <details>
+        <summary><h3>Does beanstalkd-rs work with Laravel queues?</h3></summary>
+        <p>Yes. Laravel's beanstalkd queue driver uses Pheanstalk, one of the clients compared transcript for transcript against the reference beanstalkd. Point the queue connection at beanstalkd-rs.</p>
+      </details>
+      <details>
+        <summary><h3>Can beanstalkd-rs read an existing beanstalkd binlog?</h3></summary>
+        <p>No. beanstalkd-rs keeps its own on-disk format, a segmented and preallocated write-ahead log, and refuses the other server's directory with <code>bad magic</code>. To migrate, put the old server in drain mode with <code>SIGUSR1</code>, wait for its queues to empty, then start beanstalkd-rs on a new, empty directory. <a href="https://github.com/shaunlee/beanstalkd-rs#migrating-from-beanstalkd">The migration guide</a> has the steps.</p>
+      </details>
+      <details>
+        <summary><h3>What behaves differently from beanstalkd?</h3></summary>
+        <p>Very little. The command line is the same except <code>-u</code>, which is rejected: privilege dropping belongs to the service manager. A binlog write or fsync error stops the server instead of silently disabling the log. A put too large for one log segment replies <code>OUT_OF_MEMORY</code>. Every difference, with the test that covers it, is in <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/COMPAT.md">docs/COMPAT.md</a>.</p>
+      </details>
+      <details>
+        <summary><h3>Does beanstalkd-rs support replication and failover?</h3></summary>
+        <p>Yes, optionally. Three or five nodes form a Raft cluster over mutual TLS. Clients connect to any node, the cluster keeps serving through the loss of a minority, and nodes can be added, removed or moved while it serves. Without a cluster configuration it runs as a single server, like beanstalkd.</p>
+      </details>
+      <details>
+        <summary><h3>Is beanstalkd-rs ready for production?</h3></summary>
+        <p>Judge it by the testing: 222 differential cases replay the same operations against the C reference and require identical replies, 800+ tests include crash, restart and chaos suites, four decoders are fuzzed, and the workspace forbids <code>unsafe</code> code. The <a href="https://github.com/shaunlee/beanstalkd-rs/blob/main/docs/OPERATIONS.md">operations guide</a> covers systemd, backups, upgrades and monitoring.</p>
+      </details>
+    </div>
   </div>
 </section>
 

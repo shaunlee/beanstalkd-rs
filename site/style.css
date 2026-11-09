@@ -207,6 +207,21 @@ button { font: inherit; color: inherit; }
 .compare td { text-align: center; color: var(--text); }
 .tick { width: 24px; height: 24px; color: var(--accent); vertical-align: middle; }
 
+/* FAQ */
+.faq { background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--radius); }
+.faq details + details { border-top: 1px solid var(--line); }
+.faq summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 17px 22px; cursor: pointer; list-style: none; border-radius: var(--radius); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; flex: none; color: var(--accent); font-size: 24px; font-weight: 400; line-height: 1; transition: transform .2s ease; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq summary:hover h3 { color: var(--accent-text); }
+.faq h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+.faq p { padding: 0 22px 20px; max-width: 70ch; color: var(--text); font-size: 16px; line-height: 1.6; }
+.faq code { font-size: 14.5px; }
+.faq a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.faq a:hover { text-decoration-color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .faq summary::after { transition: none; } }
+
 /* Get started */
 .code-panel { background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; }
 .tabs { display: flex; align-items: stretch; gap: 8px; height: 46px; padding: 0 12px 0 6px; border-bottom: 1px solid var(--line-strong); background: var(--panel-2); }
@@ -291,6 +306,8 @@ button { font: inherit; color: inherit; }
   .compare { font-size: 14px; table-layout: auto; }
   .compare thead th { white-space: nowrap; }
   .compare th, .compare td { padding: 6px 10px; height: auto; }
+  .faq summary { padding: 15px 16px; }
+  .faq p { padding: 0 16px 18px; }
   .tabs { overflow-x: auto; }
   .tabs [role=tab] { padding: 0 10px; font-size: 15px; white-space: nowrap; }
   .pane pre { font-size: 13px; line-height: 21px; }

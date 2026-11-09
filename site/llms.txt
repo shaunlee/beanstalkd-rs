@@ -1,0 +1,29 @@
+# beanstalkd-rs
+
+> beanstalkd-rs is a drop-in replacement for beanstalkd, the simple work queue, written in Rust. It speaks the beanstalkd protocol byte for byte, so existing clients work unmodified, and adds built-in TLS, token and mutual TLS authentication, Prometheus metrics and optional Raft replication. MIT licensed.
+
+Key facts:
+
+- Install: `cargo install bstkd` (the binary is called `beanstalkd-rs`), the container image `shonhen/beanstalkd-rs` (also `ghcr.io/shaunlee/beanstalkd-rs`), or release archives for Linux x86_64 and aarch64 and macOS aarch64.
+- Command line: the same flags as beanstalkd (`-l -p -z -b -f -F -s -V -v`) except `-u`, which is rejected. Configuration can also come from a TOML file (`--config`).
+- Compatibility: 222 differential test cases replay the same operations against the C reference and require identical replies. The Python greenstalk, Go beanstalk and PHP Pheanstalk clients (Pheanstalk is what Laravel's beanstalkd queue driver uses) are compared transcript for transcript.
+- Not compatible: the binlog directory. beanstalkd-rs uses its own write-ahead log format; migrate by draining the old server (`SIGUSR1`) and starting beanstalkd-rs on a new, empty directory.
+- Performance: 1.2–1.4× the throughput of beanstalkd at 10–100 connections and 2.2× with a binlog and fsync, with 10–24% less CPU per operation. One connection is latency-bound and about 4% slower on Linux.
+- Operations: Prometheus `/metrics`, `/healthz`, `/readyz` and a JSON `/admin` endpoint; SIGTERM stops accepting, syncs the log and exits 0.
+- Replication: an optional Raft cluster of 3 or 5 nodes over mutual TLS; clients connect to any node and the cluster keeps serving through the loss of a minority.
+- Not a fit for: consumer groups, streams or replay (use NATS, Kafka or Redis Streams), or zero-operations managed queues (use SQS or Cloud Tasks).
+
+## Docs
+
+- [README](https://raw.githubusercontent.com/shaunlee/beanstalkd-rs/main/README.md): overview, installation, migrating from beanstalkd, comparison table
+- [Operations guide](https://raw.githubusercontent.com/shaunlee/beanstalkd-rs/main/docs/OPERATIONS.md): systemd, configuration, TLS, authentication, clusters, backups, upgrades, monitoring
+- [Configuration reference](https://raw.githubusercontent.com/shaunlee/beanstalkd-rs/main/docs/beanstalkd-rs.example.toml): every configuration key, commented
+- [Compatibility](https://raw.githubusercontent.com/shaunlee/beanstalkd-rs/main/docs/COMPAT.md): every intentional difference from beanstalkd, with the test that covers it
+
+## Optional
+
+- [Full text](https://shaunlee.github.io/beanstalkd-rs/llms-full.txt): the README, compatibility notes and operations guide in one file
+- [Benchmarks](https://raw.githubusercontent.com/shaunlee/beanstalkd-rs/main/docs/BENCH.md): method, every result and the raw data
+- [Design](https://raw.githubusercontent.com/shaunlee/beanstalkd-rs/main/docs/DESIGN.md): architecture and design
+- [Changelog](https://raw.githubusercontent.com/shaunlee/beanstalkd-rs/main/CHANGELOG.md): changes per release
+- [Source](https://github.com/shaunlee/beanstalkd-rs)
